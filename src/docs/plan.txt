@@ -1,3 +1,7 @@
+- tempo
+- 
+
+
 ...when user lands: it's a blank app, with defaults
 ...HK Mode is always true
   - metronome: off

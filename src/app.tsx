@@ -1,65 +1,54 @@
 import React from 'react'
-import { NOTE_NAMES_IN_ORDER, NOTES, NOTES_IN_ORDER } from './constants/notes'
+import { NOTES, NOTES_IN_ORDER } from './constants/notes'
+
+const DNOTE_DURS: DNoteDur[] = [1, 2, 4, 8, 16, 32]
+const DNOTE_INTS: DNoteInt[] = ["1", "2min", "2maj", "3", "3min", "3maj", "4", "5", "6", "6min", "6maj", "7", "7min", "7maj", "8"] 
+const SHIFT_VALS: number[] = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
 
 const DEFAULT_TEMPO = 140
-const DEFAULT_DUR = 8
-const DEFAULT_METRONOME_FREQ = 4
-const DEFAULT_OCTAVE = 'todo'
 const DEFAULT_SCALE = NOTES.E2.name
+const DEFAULT_METRONOME_FREQ: DNoteDur = 4
 const DEFAULT_SHIFT = 0
-const DEFAULT_INT = 1
-
-const notes = [
-    { shift: 0, deg: "1", int: "5", dur: 1, durMod: 600 },
-    [2, { shift: 0, deg: "s4", int: "5", dur: 2, durMod: 0 }],
-    [2, { shift: 0, deg: "s4", int: "5", dur: 4, durMod: 0 }],
-    [4, { shift: 0, deg: "s4", int: "5", dur: 8, durMod: 0 }],
-    { shift: 0, deg: "1", int: "5", dur: 1, durMod: 600 },
-    [2, { shift: 0, deg: "s4", int: "5", dur: 2, durMod: 0 }],
-    [2, { shift: 0, deg: "s4", int: "5", dur: 4, durMod: 0 }],
-    [4, { shift: 0, deg: "s4", int: "5", dur: 8, durMod: 0 }],
-    { shift: 0, deg: "1", int: "5", dur: 1, durMod: 600 },
-    [2, { shift: 0, deg: "s4", int: "5", dur: 2, durMod: 0 }],
-    [2, { shift: 0, deg: "s4", int: "5", dur: 4, durMod: 0 }],
-    [4, { shift: 0, deg: "s4", int: "5", dur: 8, durMod: 0 }],
-    { shift: 0, deg: "1", int: "5", dur: 1, durMod: 600 },
-    [2, { shift: 0, deg: "s4", int: "5", dur: 2, durMod: 0 }],
-    [2, { shift: 0, deg: "s4", int: "5", dur: 4, durMod: 0 }],
-    [4, { shift: 0, deg: "s4", int: "5", dur: 8, durMod: 0 }],
-]
+const DEFAULT_DUR: DNoteDur = 8
+const DEFAULT_INT: DNoteInt = "1"
 
 export function App() {
-	// Tempo
+	// Tempo: "/"
 	const [tempo, setTempo] = React.useState(DEFAULT_TEMPO)
 	const tempoInputRef = React.useRef<HTMLInputElement>(null)
 
-	// Scale
+	// Scale: "a" / "s"
 	const [scale, setScale] = React.useState(DEFAULT_SCALE)
 
-	// Shift
-	const [shift, setShift] = React.useState(DEFAULT_SHIFT)
-
-	// Dur
-	const [dur, setDur] = React.useState<DNoteDur>(DEFAULT_DUR)
-
-	// Int
-	const [int, setInt] = React.useState<DNoteInt>(DEFAULT_DUR)
-
-	// DurMod
-	const [durMod, setDurMod] = React.useState<null | number>(null)
-
-	// Metronome
+	// Metronome: "m", "," / "."
 	const [isMetronomeOn, setIsMetronomeOn] = React.useState(false)
 	const [metronomeFreq, setMetronomeFreq] = React.useState(DEFAULT_METRONOME_FREQ)
 
-	const DNOTE_DURS: DNoteDur[] = [1, 2, 4, 8, 16, 32]
+	// Shift: "d" / "f"
+	const [shift, setShift] = React.useState(DEFAULT_SHIFT)
+
+	// Dur: "e" / "r"
+	const [dur, setDur] = React.useState<DNoteDur>(DEFAULT_DUR)
+
+	// Int: "v"
+	const [int, setInt] = React.useState<DNoteInt>(DEFAULT_INT)
+	const intSelectRef = React.useRef<HTMLSelectElement>(null)
+
+	// DurMod: "c"
+	const [durMod, setDurMod] = React.useState<null | number>(100)
+	const durModInputRef = React.useRef<HTMLInputElement>(null)
+
 
 	React.useEffect(() => {
 		const keyboardEventHandler = (e: KeyboardEvent) => {
-
-		console.log(e.key)
 		switch (e.key) {
-			// Tempo: Focus On/Off
+			/*
+			|--------------------------------------------------------------------------
+			| TEMPO
+			|--------------------------------------------------------------------------
+			*/
+			
+			// Focus On/Off
 			case "/":
 				if (document.activeElement === tempoInputRef.current) {
 					tempoInputRef?.current?.blur();
@@ -67,7 +56,14 @@ export function App() {
 					tempoInputRef.current?.focus();
 				}
 				break;
-			// Scale: Down
+
+			/*
+			|--------------------------------------------------------------------------
+			| SCALE
+			|--------------------------------------------------------------------------
+			*/
+			
+			// Down
 			case "a":
 				setScale(s => {
 					const asdf = NOTES_IN_ORDER.findIndex(a => a.name === s)
@@ -75,7 +71,8 @@ export function App() {
 					return NOTES_IN_ORDER[asdf - 1].name
 				})
 				break;
-			// Scale: Up
+
+			// Up
 			case "s":
 				setScale(s => {
 					const asdf = NOTES_IN_ORDER.findIndex(a => a.name === s)
@@ -83,28 +80,125 @@ export function App() {
 					return NOTES_IN_ORDER[asdf + 1].name
 				})
 				break;
-// Dur: Down
-case "e":
-    setDur(s => {
-        const currentIndex = DNOTE_DURS.findIndex(d => d === s)
-        const nextIndex = (currentIndex - 1 + DNOTE_DURS.length) % DNOTE_DURS.length
-        return DNOTE_DURS[nextIndex]
-    })
-    break;
-// Dur: Up
-case "r":
-    setDur(s => {
-        const currentIndex = DNOTE_DURS.findIndex(d => d === s)
-        const nextIndex = (currentIndex + 1) % DNOTE_DURS.length
-        return DNOTE_DURS[nextIndex]
-    })
-    break;
+	
+			/*
+			|--------------------------------------------------------------------------
+			| METRONOME
+			|--------------------------------------------------------------------------
+			*/
+
+			// Toggle
+			case "m":
+				setIsMetronomeOn(s => !s)
+				break;
+
+			// Dur: Down
+			case ",":
+				setMetronomeFreq(s => {
+					const currentIndex = DNOTE_DURS.findIndex(d => d === s)
+					const nextIndex = (currentIndex - 1 + DNOTE_DURS.length) % DNOTE_DURS.length
+					return DNOTE_DURS[nextIndex]
+				})
+				break;
+
+			// Dur: Up
+			case ".":
+				setMetronomeFreq(s => {
+					const currentIndex = DNOTE_DURS.findIndex(d => d === s)
+					const nextIndex = (currentIndex + 1) % DNOTE_DURS.length
+					return DNOTE_DURS[nextIndex]
+				})
+				break;
+
+			/*
+			|--------------------------------------------------------------------------
+			| SHIFT
+			|--------------------------------------------------------------------------
+			*/
+
+			// Down
+			case "d":
+				setShift(s => {
+					const currentIndex = SHIFT_VALS.findIndex(d => d === s)
+					const nextIndex = (currentIndex - 1 + SHIFT_VALS.length) % SHIFT_VALS.length
+					return SHIFT_VALS[nextIndex]
+				})
+				break;
+
+			// Up
+			case "f":
+				setShift(s => {
+					const currentIndex = SHIFT_VALS.findIndex(d => d === s)
+					const nextIndex = (currentIndex + 1 + SHIFT_VALS.length) % SHIFT_VALS.length
+					return SHIFT_VALS[nextIndex]
+				})
+				break;
+
+			/*
+			|--------------------------------------------------------------------------
+			| DURATION
+			|--------------------------------------------------------------------------
+			*/
+
+			// Dur: Down
+			case "e":
+				setDur(s => {
+					const currentIndex = DNOTE_DURS.findIndex(d => d === s)
+					const nextIndex = (currentIndex - 1 + DNOTE_DURS.length) % DNOTE_DURS.length
+					return DNOTE_DURS[nextIndex]
+				})
+				break;
+
+			// Dur: Up
+			case "r":
+				setDur(s => {
+					const currentIndex = DNOTE_DURS.findIndex(d => d === s)
+					const nextIndex = (currentIndex + 1) % DNOTE_DURS.length
+					return DNOTE_DURS[nextIndex]
+				})
+				break;
+
+			/*
+			|--------------------------------------------------------------------------
+			| INTERVAL
+			|--------------------------------------------------------------------------
+			*/
+
+			case "v":
+				if (document.activeElement === intSelectRef.current) {
+					intSelectRef.current?.blur()
+				} else {
+					intSelectRef.current?.focus()
+				}
+				break
+
+			/*	
+			|--------------------------------------------------------------------------
+			| DURATION MOD
+			|--------------------------------------------------------------------------
+			*/
+
+			// Focus On/Off
+			case "c":
+				if (document.activeElement === durModInputRef.current) {
+					durModInputRef?.current?.blur();
+				} else {
+					durModInputRef.current?.focus();
+				}
+				break;
 			}
 		};
 
 		window.addEventListener("keydown", keyboardEventHandler)
 		return () => window.removeEventListener("keydown", keyboardEventHandler)
 	}, [])
+
+	
+	/*
+	|--------------------------------------------------------------------------
+	| RENDER
+	|--------------------------------------------------------------------------
+	*/			
 
 	return (
 		<>
@@ -132,6 +226,25 @@ case "r":
 						type="text" 
 						id="scale" 
 					/>
+				</div>
+
+				{/* Metronome */}
+				<div style={{ marginBottom: 12 }}>
+					<label htmlFor="scale" style={{ marginRight: 8 }}>Metronome:</label>
+					<input
+						style={{ width: 40, marginRight: 12 }} 
+						value={isMetronomeOn ? "On" : "Off"} 
+						type="text" 
+						id="scale" 
+					/>
+					{isMetronomeOn && (
+						<input
+							style={{ width: 40 }} 
+							value={metronomeFreq} 
+							onChange={() => {}}
+							type="text" 
+						/>
+					)}
 				</div>
 			</div>
 			
@@ -168,19 +281,26 @@ case "r":
 
 					{/* Int */}
 					<div style={{ marginBottom: 12 }}>
-						<label htmlFor="shift" style={{ marginRight: 8 }}>Int:</label>
-						<input
-							style={{ width: 40 }} 
-							value={int} 
-							type="text" 
-							id="scale" 
-						/>
+						<label htmlFor="int" style={{ marginRight: 8 }}>Int:</label>
+						<select
+							ref={intSelectRef}
+							style={{ width: 60 }}
+							value={int}
+							onChange={e => setInt(e.target.value as DNoteInt)}
+							id="int"
+						>
+							{DNOTE_INTS.map(v => (
+								<option key={v} value={v}>{v}</option>
+							))}
+						</select>
 					</div>
 
 					{/* DurMod */}
 					<div style={{ marginBottom: 12 }}>
 						<label htmlFor="shift" style={{ marginRight: 8 }}>DurMod:</label>
 						<input
+							ref={durModInputRef}
+							onChange={e => setDurMod(Number(e.target.value))} 
 							style={{ width: 40 }} 
 							value={durMod ?? ""} 
 							type={durMod ? "number" : "text"}
@@ -195,38 +315,3 @@ case "r":
 }
 
 export default App
-
-
-			{/* <div style={{ marginBottom: 12 }}>
-				<label htmlFor="dur" style={{ marginRight: 12 }}>Duration</label>
-				<input value={dur} type="text" id="dur" />
-			</div> */}
-			// case "a":
-			// 	setIsMetronomeOn(m => !m);
-			// 	break;
-			// case "w":
-			// 	setDur(prev => {
-			// 		const i = DURATION_STEPS.indexOf(prev);
-			// 		return DURATION_STEPS[(i + 1) % DURATION_STEPS.length];
-			// 	});
-			// 	break;
-			// case "s":
-			// 	setDur(prev => {
-			// 		const i = DURATION_STEPS.indexOf(prev);
-			// 		return DURATION_STEPS[(i - 1 + DURATION_STEPS.length) % DURATION_STEPS.length];
-			// 	});
-			// 	break;
-
-
-			// const [isHotKeyMode, setIsHotKeyMode] = React.useState(false)
-
-				// if (e.altKey && e.shiftKey) {
-	// if (e.ctrlKey) {
-		// e.preventDefault();
-		// e.stopPropagation();
-
-					{/* Tempo */}
-			{/* <div style={{ marginBottom: 12 }}>
-				<label htmlFor="tempo" style={{ marginRight: 12 }}>Tempo</label>
-				<p>HK Mode: {isHotKeyMode.toString()}</p>
-			</div> */}
