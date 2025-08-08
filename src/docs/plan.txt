@@ -1,0 +1,27 @@
+...when user lands: it's a blank app, with defaults
+...HK Mode is always true
+  - metronome: off
+  - metronome: up/down
+  - tempo: 140
+  - duration: 8
+  - interval: 1
+
+Hot Keys
+- "/": metronome dialog with metronome focus()
+- ...i need some flag to start "recording"
+- "`": edit mode
+- 0: go to the notes
+  - 1 @ 2 3 # 4 $ 5 6 ^ 7 &: notes
+  - arrows: going through the notes
+
+  Combinations
+  - i/j
+  - e/r
+  - q/w
+  - a/s
+  - d/f
+
+  MISC
+  - inteval: will open select, to select from
+  - dur: will be for a single note
+  - i need to have metadata dialog on pressing some key: artist/album/song
