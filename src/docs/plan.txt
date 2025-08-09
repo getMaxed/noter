@@ -1,3 +1,100 @@
+TO DO
+- add delete functionality
+- add select functionality
+- add mass delete + mass edit functionality
+- add copy functionality
+- add paste functionality
+- undo
+- redo
+- add blank note (0)
+- by default: create a new row
+- write a good notation with colors
+  - deg: bold
+
+....there's also + and -
+
+- notation: each element has to have its color
+
+- ...also make sure we read from the proper state
+
+- refine terminology
+
+....i don't want to click NEXT every time
+
+IF noteKey: create next one blank
+IF changing settings - applied to prev one
+IF changing note - set that note
+
+
+type DNote = {
+    shift: number, // -5 - 5
+    deg: NoteDeg
+    int: NoteInt
+    dur: NoteDur
+    durMod: null | number
+}
+
+- before prompting: cleanup everythingh
+
+
+- add all controls
+- cleanup everything
+- add main styles
+- refactor shit
+
+CONTROLS
+- play
+- play from beginning of riff
+- play from beginning of part
+
+ADDT KEYS
+- add metadata
+- add drums
+- add additional instruments
+
+URL Structure
+- musicm.app/write
+- musicm.app/write/{draftId}
+- musicm.app/riffs/write/{riffId}
+- musicm.app/parts/write/{partId}
+- musicm.app/songs/write/{songId}
+
+QUESTIONS
+- what is the best way to store that info for further processing and analytics? what format?
+
+
+- add hook: registerButtons
+
+
+- tempo
+
+- scale
+- metronome
+
+- shift
+- dur
+- int
+- durMod
+
+
+
+
+
+TO DO
+- add metronome (as #1)
+  - on/off 
+  - freq
+
+TO DO LATER
+- when removing metronome freq: reset the default
+
+PENDING
+- make sure that refs are cleared on ESC
+- add chords (make sure it's extensible)
+- add triplets
+
+durModInputRef
+
 - tempo
 - 
 

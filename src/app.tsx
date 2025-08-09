@@ -1,6 +1,12 @@
 import React from 'react'
 import { NOTES, NOTES_IN_ORDER } from './constants/notes'
 
+/*
+|--------------------------------------------------------------------------
+| DEFAULTS
+|--------------------------------------------------------------------------
+*/
+
 const DNOTE_DURS: DNoteDur[] = [1, 2, 4, 8, 16, 32]
 const DNOTE_INTS: DNoteInt[] = ["1", "2min", "2maj", "3", "3min", "3maj", "4", "5", "6", "6min", "6maj", "7", "7min", "7maj", "8"] 
 const SHIFT_VALS: number[] = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
@@ -22,6 +28,12 @@ const DEFAULT_NOTE: DNote = {
 	dur: DEFAULT_DUR,
 	durMod: DEFAULT_DUR_MOD
 }
+
+/*
+|--------------------------------------------------------------------------
+| SHORTCUTS
+|--------------------------------------------------------------------------
+*/
 
 // GENERAL SETTINGS
 const KEY_TEMPO_INPUT_FOCUS_TOGGLE = "/"
@@ -48,8 +60,8 @@ const KEY_DEG_S7 = "u"
 // NOTE SETTINGS
 const KEY_SHIFT_DOWN = "o"
 const KEY_SHIFT_UP = "p"
-const KEY_DURATION_DOWN = "["
-const KEY_DURATION_UP = "]"
+const KEY_DURATION_DOWN = "]"
+const KEY_DURATION_UP = "["
 const KEY_SELECT_INT_FOCUS_TOGGLE = "\\"
 const KEY_SELECT_DURMOD_FOCUS_TOGGLE = "l"
 
@@ -71,22 +83,15 @@ export function App() {
     		prev.map((n, i) => (i === activeNoteIdx ? { ...n, [key]: value } : n))
   		);
 	}
-
-	const [tempo, setTempo] = React.useState(DEFAULT_TEMPO)
-
-	// const [shift, setShift] = React.useState(DEFAULT_SHIFT)
-	// const [dur, setDur] = React.useState<DNoteDur>(DEFAULT_DUR)
-	// const [int, setInt] = React.useState<DNoteInt>(DEFAULT_INT)
-	// const [durMod, setDurMod] = React.useState<null | number>(100)
-	
 	
 	/*
 	|--------------------------------------------------------------------------
-	| MELODY SETTINGS
+	| SETTINGS: GENERAL
 	|--------------------------------------------------------------------------
 	*/
 	
 	// Tempo
+	const [tempo, setTempo] = React.useState(DEFAULT_TEMPO)
 	const tempoInputRef = React.useRef<HTMLInputElement>(null)
 	
 	// Scale
@@ -98,7 +103,7 @@ export function App() {
 
 	/*
 	|--------------------------------------------------------------------------
-	| NOTE SETTINGS REFS
+	| SETTINGS: NOTE
 	|--------------------------------------------------------------------------
 	*/
 	
@@ -111,162 +116,203 @@ export function App() {
 	|--------------------------------------------------------------------------
 	*/
 
+	console.log({activeNoteIdx})
+
 	React.useEffect(() => {
 		const keyboardEventHandler = (e: KeyboardEvent) => {
-		switch (e.key) {
-			/*
-			|--------------------------------------------------------------------------
-			| TEMPO
-			|--------------------------------------------------------------------------
-			*/
-			
-			case KEY_TEMPO_INPUT_FOCUS_TOGGLE:
-				toggleInputFocus(tempoInputRef)
-				break;
+			const isLatestNote = activeNoteIdx === notes.length - 1
+			console.log('Key pressed: ', e.key)
+			switch (e.key) {
+				/*
+				|--------------------------------------------------------------------------
+				| ASDF
+				|--------------------------------------------------------------------------
+				*/
+				
+				case "ArrowRight":
+					setActiveNoteIdx(s => s + 1)
+					if (isLatestNote) {
+						setNotes(prev => {
+							const updatedNotes = [ ...prev ]
+							const latestNoteSettings = { ...prev[activeNoteIdx] }
+							updatedNotes.push(latestNoteSettings)
+							return updatedNotes
+						});
+					}
+					break;
+				/*
+				|--------------------------------------------------------------------------
+				| ASDF
+				|--------------------------------------------------------------------------
+				*/
 
-			/*
-			|--------------------------------------------------------------------------
-			| SCALE
-			|--------------------------------------------------------------------------
-			*/
-			
-			case KEY_SCALE_DOWN:
-				setScale(s => cycleArrayValue("down", NOTES_IN_ORDER.map(o => o.name), s))
-				break;
+				case "ArrowLeft":
+					if (e.shiftKey) {
+						console.log('SHIFT IS PRESSED')
+					} else {
+						setActiveNoteIdx(s => s ? s - 1 : s)
+					}
+					break;
 
-			case KEY_SCALE_UP:
-				setScale(s => cycleArrayValue("up", NOTES_IN_ORDER.map(o => o.name), s))
-				break;
-	
-			/*
-			|--------------------------------------------------------------------------
-			| METRONOME
-			|--------------------------------------------------------------------------
-			*/
+				/*
+				|--------------------------------------------------------------------------
+				| ASDF
+				|--------------------------------------------------------------------------
+				*/
 
-			case KEY_METRNOME_TOGGLE:
-				setIsMetronomeOn(s => !s)
-				break;
+				case "Delete":
+					if (notes.length <= 1) return
+					setNotes(prev => prev.filter((_, idx) => idx !== activeNoteIdx))
+					setActiveNoteIdx(activeNoteIdx - (isLatestNote ? 1 : 0))
+					break;
 
-			case KEY_METRNOME_FREQ_DOWN:
-				setMetronomeFreq(s => cycleArrayValue("down", DNOTE_DURS, s))
-				break;
+				/*
+				|--------------------------------------------------------------------------
+				| TEMPO
+				|--------------------------------------------------------------------------
+				*/
+				
+				case KEY_TEMPO_INPUT_FOCUS_TOGGLE:
+					toggleInputFocus(tempoInputRef)
+					break;
 
-			case KEY_METRNOME_FREQ_UP:
-				setMetronomeFreq(s => cycleArrayValue("up", DNOTE_DURS, s))
-				break;
+				/*
+				|--------------------------------------------------------------------------
+				| SCALE
+				|--------------------------------------------------------------------------
+				*/
+				
+				case KEY_SCALE_DOWN:
+					setScale(s => cycleArrayValue("down", NOTES_IN_ORDER.map(o => o.name), s))
+					break;
 
-			/*
-			|--------------------------------------------------------------------------
-			| DEG
-			|--------------------------------------------------------------------------
-			*/
+				case KEY_SCALE_UP:
+					setScale(s => cycleArrayValue("up", NOTES_IN_ORDER.map(o => o.name), s))
+					break;
+		
+				/*
+				|--------------------------------------------------------------------------
+				| METRONOME
+				|--------------------------------------------------------------------------
+				*/
 
-			case KEY_DEG_1:
-				updateNote("deg", "1");
-				break;
-			case KEY_DEG_F2:
-				updateNote("deg", "f2");
-				break;
-			case KEY_DEG_2:
-				updateNote("deg", "2");
-				break;
-			case KEY_DEG_3:
-				updateNote("deg", "3");
-				break;
-			case KEY_DEG_S3:
-				updateNote("deg", "s3");
-				break;
-			case KEY_DEG_4:
-				updateNote("deg", "4");
-				break;
-			case KEY_DEG_S4:
-				updateNote("deg", "s4");
-				break;
-			case KEY_DEG_5:
-				updateNote("deg", "5");
-				break;
-			case KEY_DEG_6:
-				updateNote("deg", "6");
-				break;
-			case KEY_DEG_S6:
-				updateNote("deg", "s6");
-				break;
-			case KEY_DEG_7:
-				updateNote("deg", "7");
-				break;
-			case KEY_DEG_S7:
-				updateNote("deg", "s7");
-				break;
+				case KEY_METRNOME_TOGGLE:
+					setIsMetronomeOn(s => !s)
+					break;
 
+				case KEY_METRNOME_FREQ_DOWN:
+					setMetronomeFreq(s => cycleArrayValue("down", DNOTE_DURS, s))
+					break;
 
-			// trg
+				case KEY_METRNOME_FREQ_UP:
+					setMetronomeFreq(s => cycleArrayValue("up", DNOTE_DURS, s))
+					break;
 
+				/*
+				|--------------------------------------------------------------------------
+				| DEG
+				|--------------------------------------------------------------------------
+				*/
 
+				case KEY_DEG_1:
+					updateNote("deg", "1");
+					break;
+				case KEY_DEG_F2:
+					updateNote("deg", "f2");
+					break;
+				case KEY_DEG_2:
+					updateNote("deg", "2");
+					break;
+				case KEY_DEG_3:
+					updateNote("deg", "3");
+					break;
+				case KEY_DEG_S3:
+					updateNote("deg", "s3");
+					break;
+				case KEY_DEG_4:
+					updateNote("deg", "4");
+					break;
+				case KEY_DEG_S4:
+					updateNote("deg", "s4");
+					break;
+				case KEY_DEG_5:
+					updateNote("deg", "5");
+					break;
+				case KEY_DEG_6:
+					updateNote("deg", "6");
+					break;
+				case KEY_DEG_S6:
+					updateNote("deg", "s6");
+					break;
+				case KEY_DEG_7:
+					updateNote("deg", "7");
+					break;
+				case KEY_DEG_S7:
+					updateNote("deg", "s7");
+					break;
 
-			/*
-			|--------------------------------------------------------------------------
-			| SHIFT
-			|--------------------------------------------------------------------------
-			*/
+				/*
+				|--------------------------------------------------------------------------
+				| SHIFT
+				|--------------------------------------------------------------------------
+				*/
 
-			// trg
-			case KEY_SHIFT_DOWN:
-				setNotes(prev =>
-					prev.map((settings, i) => (i === activeNoteIdx ? { ...settings, "shift": cycleArrayValue("down", SHIFT_VALS, settings.shift) } : settings))
-				);
-				break;
-			
-			case KEY_SHIFT_UP:
-				setNotes(prev =>
-					prev.map((settings, i) => (i === activeNoteIdx ? { ...settings, "shift": cycleArrayValue("up", SHIFT_VALS, settings.shift) } : settings))
-				);
-				break;
+				case KEY_SHIFT_DOWN:
+					setNotes(prev =>
+						prev.map((settings, i) => (i === activeNoteIdx ? { ...settings, "shift": cycleArrayValue("down", SHIFT_VALS, settings.shift) } : settings))
+					);
+					break;
+				
+				case KEY_SHIFT_UP:
+					setNotes(prev =>
+						prev.map((settings, i) => (i === activeNoteIdx ? { ...settings, "shift": cycleArrayValue("up", SHIFT_VALS, settings.shift) } : settings))
+					);
+					break;
 
-			/*
-			|--------------------------------------------------------------------------
-			| DURATION
-			|--------------------------------------------------------------------------
-			*/
+				/*
+				|--------------------------------------------------------------------------
+				| DURATION
+				|--------------------------------------------------------------------------
+				*/
 
-			case KEY_DURATION_DOWN:
-				setNotes(prev =>
-					prev.map((settings, i) => (i === activeNoteIdx ? { ...settings, "dur": cycleArrayValue("down", DNOTE_DURS, settings.dur) } : settings))
-				);
-				break;
+				case KEY_DURATION_DOWN:
+					setNotes(prev =>
+						prev.map((settings, i) => (i === activeNoteIdx ? { ...settings, "dur": cycleArrayValue("down", DNOTE_DURS, settings.dur) } : settings))
+					);
+					break;
 
-			case KEY_DURATION_UP:
-				setNotes(prev =>
-					prev.map((settings, i) => (i === activeNoteIdx ? { ...settings, "dur": cycleArrayValue("up", DNOTE_DURS, settings.dur) } : settings))
-				);
-				break;
+				case KEY_DURATION_UP:
+					setNotes(prev =>
+						prev.map((settings, i) => (i === activeNoteIdx ? { ...settings, "dur": cycleArrayValue("up", DNOTE_DURS, settings.dur) } : settings))
+					);
+					break;
 
-			/*
-			|--------------------------------------------------------------------------
-			| INTERVAL
-			|--------------------------------------------------------------------------
-			*/
+				/*
+				|--------------------------------------------------------------------------
+				| INTERVAL
+				|--------------------------------------------------------------------------
+				*/
 
-			case KEY_SELECT_INT_FOCUS_TOGGLE:
-				toggleInputFocus(intSelectRef)
-				break
+				case KEY_SELECT_INT_FOCUS_TOGGLE:
+					toggleInputFocus(intSelectRef)
+					break
 
-			/*	
-			|--------------------------------------------------------------------------
-			| DURATION MOD
-			|--------------------------------------------------------------------------
-			*/
+				/*	
+				|--------------------------------------------------------------------------
+				| DURATION MOD
+				|--------------------------------------------------------------------------
+				*/
 
-			// Focus On/Off
-			case KEY_SELECT_DURMOD_FOCUS_TOGGLE:
-				toggleInputFocus(durModInputRef)
-				break;
-			}
+				// Focus On/Off
+				case KEY_SELECT_DURMOD_FOCUS_TOGGLE:
+					toggleInputFocus(durModInputRef)
+					break;
+				}
 		};
 
 		window.addEventListener("keydown", keyboardEventHandler)
 		return () => window.removeEventListener("keydown", keyboardEventHandler)
-	}, [])
+	}, [activeNoteIdx])
 
 	
 	/*
@@ -410,19 +456,28 @@ type NoteProps = {
 	s: DNote 
 }
 
+function Riff(notes: DNote[]) {
+	const rows = React.useMemo(() => {
+		const a = []
+	}, [notes])
+}
+
 function Note({ s, isCurr }: NoteProps) {
-	const { dur } = s
+	const { deg, dur } = s
 	const width = 100 / dur
 	return (
 		<div style={{ 
 			border: "1px solid black", 
-			backgroundColor: isCurr ? "white" : "teal", 
+			backgroundColor: isCurr ? "white" : "DarkTurquoise", 
 			height: 20, 
 			width: `${width}%`, 
 			fontSize: 12, 
-			textAlign: "right" 
+			textAlign: "center", 
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "center"
 		}}>
-			{dur}
+			{deg}-{dur}
 		</div>
 	)
 }
