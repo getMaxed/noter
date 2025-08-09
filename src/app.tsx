@@ -8,6 +8,7 @@ const SHIFT_VALS: number[] = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
 const DEFAULT_TEMPO = 140
 const DEFAULT_SCALE = NOTES.E2.name
 const DEFAULT_METRONOME_FREQ: DNoteDur = 4
+
 const DEFAULT_SHIFT: number = 0
 const DEFAULT_DUR: DNoteDur = 8
 const DEFAULT_INT: DNoteInt = "1"
@@ -40,28 +41,28 @@ export function App() {
 	|--------------------------------------------------------------------------
 	*/
 	
-	// Tempo: "/"
+	// Tempo
 	const [tempo, setTempo] = React.useState(DEFAULT_TEMPO)
 	const tempoInputRef = React.useRef<HTMLInputElement>(null)
 
-	// Scale: "a" / "s"
+	// Scale
 	const [scale, setScale] = React.useState(DEFAULT_SCALE)
 
-	// Metronome: "m", "," / "."
+	// Metronome
 	const [isMetronomeOn, setIsMetronomeOn] = React.useState(false)
 	const [metronomeFreq, setMetronomeFreq] = React.useState(DEFAULT_METRONOME_FREQ)
 
-	// Shift: "d" / "f"
+	// Shift
 	const [shift, setShift] = React.useState(DEFAULT_SHIFT)
 
-	// Dur: "e" / "r"
+	// Dur
 	const [dur, setDur] = React.useState<DNoteDur>(DEFAULT_DUR)
 
-	// Int: "v"
+	// Int
 	const [int, setInt] = React.useState<DNoteInt>(DEFAULT_INT)
 	const intSelectRef = React.useRef<HTMLSelectElement>(null)
 
-	// DurMod: "c"
+	// DurMod
 	const [durMod, setDurMod] = React.useState<null | number>(100)
 	const durModInputRef = React.useRef<HTMLInputElement>(null)
 
@@ -80,13 +81,8 @@ export function App() {
 			|--------------------------------------------------------------------------
 			*/
 			
-			// Focus On/Off
 			case "/":
-				if (document.activeElement === tempoInputRef.current) {
-					tempoInputRef?.current?.blur();
-				} else {
-					tempoInputRef.current?.focus();
-				}
+				toggleInputFocus(tempoInputRef)
 				break;
 
 			/*
@@ -95,22 +91,12 @@ export function App() {
 			|--------------------------------------------------------------------------
 			*/
 			
-			// Down
 			case "a":
-				setScale(s => {
-					const asdf = NOTES_IN_ORDER.findIndex(a => a.name === s)
-					console.log(NOTES_IN_ORDER[asdf - 1].name) 
-					return NOTES_IN_ORDER[asdf - 1].name
-				})
+				setScale(s => cycleArrayValue("down", NOTES_IN_ORDER.map(o => o.name), s))
 				break;
 
-			// Up
 			case "s":
-				setScale(s => {
-					const asdf = NOTES_IN_ORDER.findIndex(a => a.name === s)
-					console.log(NOTES_IN_ORDER[asdf + 1].name) 
-					return NOTES_IN_ORDER[asdf + 1].name
-				})
+				setScale(s => cycleArrayValue("up", NOTES_IN_ORDER.map(o => o.name), s))
 				break;
 	
 			/*
@@ -119,27 +105,16 @@ export function App() {
 			|--------------------------------------------------------------------------
 			*/
 
-			// Toggle
 			case "m":
 				setIsMetronomeOn(s => !s)
 				break;
 
-			// Dur: Down
 			case ",":
-				setMetronomeFreq(s => {
-					const currentIndex = DNOTE_DURS.findIndex(d => d === s)
-					const nextIndex = (currentIndex - 1 + DNOTE_DURS.length) % DNOTE_DURS.length
-					return DNOTE_DURS[nextIndex]
-				})
+				setMetronomeFreq(s => cycleArrayValue("down", DNOTE_DURS, s))
 				break;
 
-			// Dur: Up
 			case ".":
-				setMetronomeFreq(s => {
-					const currentIndex = DNOTE_DURS.findIndex(d => d === s)
-					const nextIndex = (currentIndex + 1) % DNOTE_DURS.length
-					return DNOTE_DURS[nextIndex]
-				})
+				setMetronomeFreq(s => cycleArrayValue("up", DNOTE_DURS, s))
 				break;
 
 			/*
@@ -148,22 +123,12 @@ export function App() {
 			|--------------------------------------------------------------------------
 			*/
 
-			// Down
 			case "d":
-				setShift(s => {
-					const currentIndex = SHIFT_VALS.findIndex(d => d === s)
-					const nextIndex = (currentIndex - 1 + SHIFT_VALS.length) % SHIFT_VALS.length
-					return SHIFT_VALS[nextIndex]
-				})
+				setShift(s => cycleArrayValue("down", SHIFT_VALS, s))
 				break;
-
-			// Up
+			
 			case "f":
-				setShift(s => {
-					const currentIndex = SHIFT_VALS.findIndex(d => d === s)
-					const nextIndex = (currentIndex + 1 + SHIFT_VALS.length) % SHIFT_VALS.length
-					return SHIFT_VALS[nextIndex]
-				})
+				setShift(s => cycleArrayValue("up", SHIFT_VALS, s))
 				break;
 
 			/*
@@ -172,22 +137,12 @@ export function App() {
 			|--------------------------------------------------------------------------
 			*/
 
-			// Dur: Down
 			case "e":
-				setDur(s => {
-					const currentIndex = DNOTE_DURS.findIndex(d => d === s)
-					const nextIndex = (currentIndex - 1 + DNOTE_DURS.length) % DNOTE_DURS.length
-					return DNOTE_DURS[nextIndex]
-				})
+				setDur(s => cycleArrayValue("down", DNOTE_DURS, s))
 				break;
 
-			// Dur: Up
 			case "r":
-				setDur(s => {
-					const currentIndex = DNOTE_DURS.findIndex(d => d === s)
-					const nextIndex = (currentIndex + 1) % DNOTE_DURS.length
-					return DNOTE_DURS[nextIndex]
-				})
+				setDur(s => cycleArrayValue("up", DNOTE_DURS, s))
 				break;
 
 			/*
@@ -197,11 +152,7 @@ export function App() {
 			*/
 
 			case "v":
-				if (document.activeElement === intSelectRef.current) {
-					intSelectRef.current?.blur()
-				} else {
-					intSelectRef.current?.focus()
-				}
+				toggleInputFocus(intSelectRef)
 				break
 
 			/*	
@@ -212,11 +163,7 @@ export function App() {
 
 			// Focus On/Off
 			case "c":
-				if (document.activeElement === durModInputRef.current) {
-					durModInputRef?.current?.blur();
-				} else {
-					durModInputRef.current?.focus();
-				}
+				toggleInputFocus(durModInputRef)
 				break;
 			}
 		};
@@ -371,4 +318,36 @@ function Note({ s, isCurr }: NoteProps) {
 			{dur}
 		</div>
 	)
+}
+
+function toggleInputFocus<T extends HTMLElement>(ref: React.RefObject<T | null>) {
+	if (document.activeElement === ref.current) {
+		ref.current?.blur();
+	} else {
+		ref.current?.focus();
+	}
+}
+
+function cycleArrayValue<T>(direction: "down" | "up", array: T[], currentValue: T): T {
+	if (!isStringOrNumberArray(array)) throw new Error(`@cycleArrayValue: Array must contain only strings or numbers`)
+
+	const currentIndex = array.findIndex(item => item === currentValue)
+
+	let nextIndex
+	if (direction === "down") {
+		nextIndex = (currentIndex - 1 + array.length) % array.length
+	} else {
+		nextIndex = (currentIndex + 1) % array.length
+	}
+	
+	return array[nextIndex]
+}
+
+function isStringOrNumberArray(arr: unknown[]): boolean {
+	if (arr.length === 0) return true
+	
+	const t = typeof arr[0]
+	if (t !== "string" && t !== "number") throw new Error(`@isStringOrNumberArray: unsupported type: ${t}`)
+
+	return arr.every(el => typeof el === t)
 }
