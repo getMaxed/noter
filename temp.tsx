@@ -51,3 +51,65 @@ const notes = [
 				<label htmlFor="tempo" style={{ marginRight: 12 }}>Tempo</label>
 				<p>HK Mode: {isHotKeyMode.toString()}</p>
 			</div> */}
+
+/* 
+- before prompting: cleanup everythingh
+
+
+- add all controls
+- cleanup everything
+- add main styles
+- refactor shit
+
+CONTROLS
+- play
+- play from beginning of riff
+- play from beginning of part
+
+ADDT KEYS
+- add metadata
+- add drums
+- add additional instruments
+
+URL Structure
+- musicm.app/write
+- musicm.app/write/{draftId}
+- musicm.app/riffs/write/{riffId}
+- musicm.app/parts/write/{partId}
+- musicm.app/songs/write/{songId}
+
+
+
+
+- add hook: registerButtons
+
+
+- tempo
+
+- scale
+- metronome
+
+- shift
+- dur
+- int
+- durMod
+
+
+
+
+
+TO DO
+- add metronome (as #1)
+  - on/off 
+  - freq
+
+TO DO LATER
+- when removing metronome freq: reset the default
+
+PENDING
+- make sure that refs are cleared on ESC
+- add chords (make sure it's extensible)
+- add triplets
+
+durModInputRef
+*/

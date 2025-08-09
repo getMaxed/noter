@@ -11,7 +11,6 @@
   - interval: 1
 
 Hot Keys
-- "/": metronome dialog with metronome focus()
 - ...i need some flag to start "recording"
 - "`": edit mode
 - 0: go to the notes

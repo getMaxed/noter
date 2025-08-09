@@ -8,11 +8,38 @@ const SHIFT_VALS: number[] = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
 const DEFAULT_TEMPO = 140
 const DEFAULT_SCALE = NOTES.E2.name
 const DEFAULT_METRONOME_FREQ: DNoteDur = 4
-const DEFAULT_SHIFT = 0
+const DEFAULT_SHIFT: number = 0
 const DEFAULT_DUR: DNoteDur = 8
 const DEFAULT_INT: DNoteInt = "1"
+const DEFAULT_DEG: DNoteDeg = "1"
+const DEFAULT_DUR_MOD: number = 100
+
+const DEFAULT_NOTE: DNote = {
+	shift: DEFAULT_SHIFT,
+	deg: DEFAULT_DEG,
+	int: DEFAULT_INT,
+	dur: DEFAULT_DUR,
+	durMod: DEFAULT_DUR_MOD
+}
 
 export function App() {
+	/*
+	|--------------------------------------------------------------------------
+	| PLAYER
+	|--------------------------------------------------------------------------
+	*/
+	
+	const [currNote, setCurrNote] = React.useState(0)
+	const [notes, setNotes] = React.useState<DNote[]>([DEFAULT_NOTE])
+
+	const currNoteDeg = notes[currNote]?.deg
+
+	/*
+	|--------------------------------------------------------------------------
+	| SETTINGS
+	|--------------------------------------------------------------------------
+	*/
+	
 	// Tempo: "/"
 	const [tempo, setTempo] = React.useState(DEFAULT_TEMPO)
 	const tempoInputRef = React.useRef<HTMLInputElement>(null)
@@ -38,6 +65,11 @@ export function App() {
 	const [durMod, setDurMod] = React.useState<null | number>(100)
 	const durModInputRef = React.useRef<HTMLInputElement>(null)
 
+	/*
+	|--------------------------------------------------------------------------
+	| KEYS CHANGE HANDLER
+	|--------------------------------------------------------------------------
+	*/
 
 	React.useEffect(() => {
 		const keyboardEventHandler = (e: KeyboardEvent) => {
@@ -201,7 +233,7 @@ export function App() {
 	*/			
 
 	return (
-		<>
+		<div style={{ padding: "6px 12px" }}>
 			<div style={{ display: 'flex', gap: 16}}>
 				{/* Tempo */}
 				<div style={{ marginBottom: 12 }}>
@@ -250,18 +282,21 @@ export function App() {
 			
 			<div style={{
 				display: "grid",
-				gridTemplateColumns: "1fr 40px",
+				gridTemplateColumns: "1fr 60px",
 				columnGap: 20
 			}}>
 				<div>
-					content
+					<p style={{ textDecoration: "underline", marginBottom: 8 }}>Some Text</p>
+					<div style={{ display: "flex", marginTop: 8, height: 20, border: "1px dotted red" }}>
+						{notes.map((n, idx) => <Note isCurr={currNote === idx} key={idx} s={n} />)}
+					</div>
 				</div>
 				<div>
 					{/* Shift */}
 					<div style={{ marginBottom: 12 }}>
 						<label htmlFor="shift" style={{ marginRight: 8 }}>Shift:</label>
 						<input
-							style={{ width: 40 }} 
+							style={{ width: 53 }} 
 							value={shift} 
 							type="text" 
 							id="scale" 
@@ -272,7 +307,7 @@ export function App() {
 					<div style={{ marginBottom: 12 }}>
 						<label htmlFor="shift" style={{ marginRight: 8 }}>Dur:</label>
 						<input
-							style={{ width: 40 }} 
+							style={{ width: 53 }} 
 							value={dur} 
 							type="text" 
 							id="scale" 
@@ -284,7 +319,7 @@ export function App() {
 						<label htmlFor="int" style={{ marginRight: 8 }}>Int:</label>
 						<select
 							ref={intSelectRef}
-							style={{ width: 60 }}
+							style={{ width: 60, height: 21 }}
 							value={int}
 							onChange={e => setInt(e.target.value as DNoteInt)}
 							id="int"
@@ -301,7 +336,7 @@ export function App() {
 						<input
 							ref={durModInputRef}
 							onChange={e => setDurMod(Number(e.target.value))} 
-							style={{ width: 40 }} 
+							style={{ width: 53 }} 
 							value={durMod ?? ""} 
 							type={durMod ? "number" : "text"}
 							step={25} 
@@ -310,8 +345,30 @@ export function App() {
 					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	)
 }
 
 export default App
+
+type NoteProps = { 
+	isCurr: boolean
+	s: DNote 
+}
+
+function Note({ s, isCurr }: NoteProps) {
+	const { dur } = s
+	const width = 100 / dur
+	return (
+		<div style={{ 
+			border: "1px solid black", 
+			backgroundColor: isCurr ? "white" : "teal", 
+			height: 20, 
+			width: `${width}%`, 
+			fontSize: 12, 
+			textAlign: "right" 
+		}}>
+			{dur}
+		</div>
+	)
+}
