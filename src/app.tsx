@@ -9,10 +9,10 @@ const DEFAULT_TEMPO = 140
 const DEFAULT_SCALE = NOTES.E2.name
 const DEFAULT_METRONOME_FREQ: DNoteDur = 4
 
+const DEFAULT_DEG: DNoteDeg = "1"
 const DEFAULT_SHIFT: number = 0
 const DEFAULT_DUR: DNoteDur = 8
 const DEFAULT_INT: DNoteInt = "1"
-const DEFAULT_DEG: DNoteDeg = "1"
 const DEFAULT_DUR_MOD: number = 100
 
 const DEFAULT_NOTE: DNote = {
@@ -37,7 +37,7 @@ export function App() {
 
 	/*
 	|--------------------------------------------------------------------------
-	| SETTINGS
+	| ///
 	|--------------------------------------------------------------------------
 	*/
 	
@@ -51,6 +51,15 @@ export function App() {
 	// Metronome
 	const [isMetronomeOn, setIsMetronomeOn] = React.useState(false)
 	const [metronomeFreq, setMetronomeFreq] = React.useState(DEFAULT_METRONOME_FREQ)
+
+	/*
+	|--------------------------------------------------------------------------
+	| ///
+	|--------------------------------------------------------------------------
+	*/
+	
+	// Deg
+	const [deg, setDeg] = React.useState(DEFAULT_DEG)
 
 	// Shift
 	const [shift, setShift] = React.useState(DEFAULT_SHIFT)
@@ -119,6 +128,61 @@ export function App() {
 
 			/*
 			|--------------------------------------------------------------------------
+			| DEG
+			|--------------------------------------------------------------------------
+			*/
+
+			case "1":
+				setDeg("1")
+				break;
+
+			case "q":
+				setDeg("f2")
+				break;
+
+			case "2":
+				setDeg("2")
+				break;
+
+			case "3":
+				setDeg("3")
+				break;
+
+			case "e":
+				setDeg("s3")
+				break;
+
+			case "4":
+				setDeg("4")
+				break;
+
+			case "r":
+				setDeg("s4")
+				break;
+				
+			case "5":
+				setDeg("5")
+				break;
+
+			case "6":
+				setDeg("6")
+				break;
+				
+			case "y":
+				setDeg("s6")
+				break;
+
+			case "7":
+				setDeg("7")
+				break;
+				
+			case "u":
+				setDeg("s7")
+				break;
+
+
+			/*
+			|--------------------------------------------------------------------------
 			| SHIFT
 			|--------------------------------------------------------------------------
 			*/
@@ -137,11 +201,11 @@ export function App() {
 			|--------------------------------------------------------------------------
 			*/
 
-			case "e":
+			case "o":
 				setDur(s => cycleArrayValue("down", DNOTE_DURS, s))
 				break;
 
-			case "r":
+			case "p":
 				setDur(s => cycleArrayValue("up", DNOTE_DURS, s))
 				break;
 
@@ -239,6 +303,17 @@ export function App() {
 					</div>
 				</div>
 				<div>
+					{/* Deg */}
+					<div style={{ marginBottom: 12 }}>
+						<label htmlFor="deg" style={{ marginRight: 8 }}>Deg:</label>
+						<input
+							style={{ width: 53 }} 
+							value={deg} 
+							type="text" 
+							id="deg" 
+						/>
+					</div>
+
 					{/* Shift */}
 					<div style={{ marginBottom: 12 }}>
 						<label htmlFor="shift" style={{ marginRight: 8 }}>Shift:</label>
