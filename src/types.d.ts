@@ -40,9 +40,9 @@ type DNoteDeg =
 
 type DNote = {
     shift: number, // -5 - 5
-    deg: NoteDeg
-    int: NoteInt
-    dur: NoteDur
+    deg: DNoteDeg
+    int: DNoteInt
+    dur: DNoteDur
     durMod: null | number
 }
 

@@ -23,28 +23,72 @@ const DEFAULT_NOTE: DNote = {
 	durMod: DEFAULT_DUR_MOD
 }
 
+// GENERAL SETTINGS
+const KEY_TEMPO_INPUT_FOCUS_TOGGLE = "/"
+const KEY_SCALE_DOWN = ";"
+const KEY_SCALE_UP = "'"
+const KEY_METRNOME_TOGGLE = "m"
+const KEY_METRNOME_FREQ_DOWN = ","
+const KEY_METRNOME_FREQ_UP = "."
+
+// NOTE SETTINGS: DEG
+const KEY_DEG_1 = "1"
+const KEY_DEG_F2 = "q"
+const KEY_DEG_2 = "2"
+const KEY_DEG_3 = "3"
+const KEY_DEG_S3 = "e"
+const KEY_DEG_4 = "4"
+const KEY_DEG_S4 = "r"
+const KEY_DEG_5 = "5"
+const KEY_DEG_6 = "6"
+const KEY_DEG_S6 = "y"
+const KEY_DEG_7 = "7"
+const KEY_DEG_S7 = "u"
+
+// NOTE SETTINGS
+const KEY_SHIFT_DOWN = "o"
+const KEY_SHIFT_UP = "p"
+const KEY_DURATION_DOWN = "["
+const KEY_DURATION_UP = "]"
+const KEY_SELECT_INT_FOCUS_TOGGLE = "\\"
+const KEY_SELECT_DURMOD_FOCUS_TOGGLE = "l"
+
 export function App() {
 	/*
 	|--------------------------------------------------------------------------
 	| PLAYER
 	|--------------------------------------------------------------------------
 	*/
+
 	
-	const [currNote, setCurrNote] = React.useState(0)
 	const [notes, setNotes] = React.useState<DNote[]>([DEFAULT_NOTE])
+	const [activeNoteIdx, setActiveNoteIdx] = React.useState(0)
 
-	const currNoteDeg = notes[currNote]?.deg
+	const currNote = React.useMemo(() => notes[activeNoteIdx], [notes, activeNoteIdx])
 
+	function updateNote<K extends keyof DNote>(key: K, value: DNote[K]) {
+  		setNotes(prev =>
+    		prev.map((n, i) => (i === activeNoteIdx ? { ...n, [key]: value } : n))
+  		);
+	}
+
+	const [tempo, setTempo] = React.useState(DEFAULT_TEMPO)
+
+	// const [shift, setShift] = React.useState(DEFAULT_SHIFT)
+	// const [dur, setDur] = React.useState<DNoteDur>(DEFAULT_DUR)
+	// const [int, setInt] = React.useState<DNoteInt>(DEFAULT_INT)
+	// const [durMod, setDurMod] = React.useState<null | number>(100)
+	
+	
 	/*
 	|--------------------------------------------------------------------------
-	| ///
+	| MELODY SETTINGS
 	|--------------------------------------------------------------------------
 	*/
 	
 	// Tempo
-	const [tempo, setTempo] = React.useState(DEFAULT_TEMPO)
 	const tempoInputRef = React.useRef<HTMLInputElement>(null)
-
+	
 	// Scale
 	const [scale, setScale] = React.useState(DEFAULT_SCALE)
 
@@ -54,25 +98,11 @@ export function App() {
 
 	/*
 	|--------------------------------------------------------------------------
-	| ///
+	| NOTE SETTINGS REFS
 	|--------------------------------------------------------------------------
 	*/
 	
-	// Deg
-	const [deg, setDeg] = React.useState(DEFAULT_DEG)
-
-	// Shift
-	const [shift, setShift] = React.useState(DEFAULT_SHIFT)
-
-	// Dur
-	const [dur, setDur] = React.useState<DNoteDur>(DEFAULT_DUR)
-
-	// Int
-	const [int, setInt] = React.useState<DNoteInt>(DEFAULT_INT)
 	const intSelectRef = React.useRef<HTMLSelectElement>(null)
-
-	// DurMod
-	const [durMod, setDurMod] = React.useState<null | number>(100)
 	const durModInputRef = React.useRef<HTMLInputElement>(null)
 
 	/*
@@ -90,7 +120,7 @@ export function App() {
 			|--------------------------------------------------------------------------
 			*/
 			
-			case "/":
+			case KEY_TEMPO_INPUT_FOCUS_TOGGLE:
 				toggleInputFocus(tempoInputRef)
 				break;
 
@@ -100,11 +130,11 @@ export function App() {
 			|--------------------------------------------------------------------------
 			*/
 			
-			case "a":
+			case KEY_SCALE_DOWN:
 				setScale(s => cycleArrayValue("down", NOTES_IN_ORDER.map(o => o.name), s))
 				break;
 
-			case "s":
+			case KEY_SCALE_UP:
 				setScale(s => cycleArrayValue("up", NOTES_IN_ORDER.map(o => o.name), s))
 				break;
 	
@@ -114,15 +144,15 @@ export function App() {
 			|--------------------------------------------------------------------------
 			*/
 
-			case "m":
+			case KEY_METRNOME_TOGGLE:
 				setIsMetronomeOn(s => !s)
 				break;
 
-			case ",":
+			case KEY_METRNOME_FREQ_DOWN:
 				setMetronomeFreq(s => cycleArrayValue("down", DNOTE_DURS, s))
 				break;
 
-			case ".":
+			case KEY_METRNOME_FREQ_UP:
 				setMetronomeFreq(s => cycleArrayValue("up", DNOTE_DURS, s))
 				break;
 
@@ -132,53 +162,46 @@ export function App() {
 			|--------------------------------------------------------------------------
 			*/
 
-			case "1":
-				setDeg("1")
+			case KEY_DEG_1:
+				updateNote("deg", "1");
+				break;
+			case KEY_DEG_F2:
+				updateNote("deg", "f2");
+				break;
+			case KEY_DEG_2:
+				updateNote("deg", "2");
+				break;
+			case KEY_DEG_3:
+				updateNote("deg", "3");
+				break;
+			case KEY_DEG_S3:
+				updateNote("deg", "s3");
+				break;
+			case KEY_DEG_4:
+				updateNote("deg", "4");
+				break;
+			case KEY_DEG_S4:
+				updateNote("deg", "s4");
+				break;
+			case KEY_DEG_5:
+				updateNote("deg", "5");
+				break;
+			case KEY_DEG_6:
+				updateNote("deg", "6");
+				break;
+			case KEY_DEG_S6:
+				updateNote("deg", "s6");
+				break;
+			case KEY_DEG_7:
+				updateNote("deg", "7");
+				break;
+			case KEY_DEG_S7:
+				updateNote("deg", "s7");
 				break;
 
-			case "q":
-				setDeg("f2")
-				break;
 
-			case "2":
-				setDeg("2")
-				break;
+			// trg
 
-			case "3":
-				setDeg("3")
-				break;
-
-			case "e":
-				setDeg("s3")
-				break;
-
-			case "4":
-				setDeg("4")
-				break;
-
-			case "r":
-				setDeg("s4")
-				break;
-				
-			case "5":
-				setDeg("5")
-				break;
-
-			case "6":
-				setDeg("6")
-				break;
-				
-			case "y":
-				setDeg("s6")
-				break;
-
-			case "7":
-				setDeg("7")
-				break;
-				
-			case "u":
-				setDeg("s7")
-				break;
 
 
 			/*
@@ -187,12 +210,17 @@ export function App() {
 			|--------------------------------------------------------------------------
 			*/
 
-			case "d":
-				setShift(s => cycleArrayValue("down", SHIFT_VALS, s))
+			// trg
+			case KEY_SHIFT_DOWN:
+				setNotes(prev =>
+					prev.map((settings, i) => (i === activeNoteIdx ? { ...settings, "shift": cycleArrayValue("down", SHIFT_VALS, settings.shift) } : settings))
+				);
 				break;
 			
-			case "f":
-				setShift(s => cycleArrayValue("up", SHIFT_VALS, s))
+			case KEY_SHIFT_UP:
+				setNotes(prev =>
+					prev.map((settings, i) => (i === activeNoteIdx ? { ...settings, "shift": cycleArrayValue("up", SHIFT_VALS, settings.shift) } : settings))
+				);
 				break;
 
 			/*
@@ -201,12 +229,16 @@ export function App() {
 			|--------------------------------------------------------------------------
 			*/
 
-			case "o":
-				setDur(s => cycleArrayValue("down", DNOTE_DURS, s))
+			case KEY_DURATION_DOWN:
+				setNotes(prev =>
+					prev.map((settings, i) => (i === activeNoteIdx ? { ...settings, "dur": cycleArrayValue("down", DNOTE_DURS, settings.dur) } : settings))
+				);
 				break;
 
-			case "p":
-				setDur(s => cycleArrayValue("up", DNOTE_DURS, s))
+			case KEY_DURATION_UP:
+				setNotes(prev =>
+					prev.map((settings, i) => (i === activeNoteIdx ? { ...settings, "dur": cycleArrayValue("up", DNOTE_DURS, settings.dur) } : settings))
+				);
 				break;
 
 			/*
@@ -215,7 +247,7 @@ export function App() {
 			|--------------------------------------------------------------------------
 			*/
 
-			case "v":
+			case KEY_SELECT_INT_FOCUS_TOGGLE:
 				toggleInputFocus(intSelectRef)
 				break
 
@@ -226,7 +258,7 @@ export function App() {
 			*/
 
 			// Focus On/Off
-			case "c":
+			case KEY_SELECT_DURMOD_FOCUS_TOGGLE:
 				toggleInputFocus(durModInputRef)
 				break;
 			}
@@ -273,12 +305,12 @@ export function App() {
 
 				{/* Metronome */}
 				<div style={{ marginBottom: 12 }}>
-					<label htmlFor="scale" style={{ marginRight: 8 }}>Metronome:</label>
+					<label htmlFor="metronome" style={{ marginRight: 8 }}>Metronome:</label>
 					<input
 						style={{ width: 40, marginRight: 12 }} 
 						value={isMetronomeOn ? "On" : "Off"} 
 						type="text" 
-						id="scale" 
+						id="metronome" 
 					/>
 					{isMetronomeOn && (
 						<input
@@ -299,7 +331,7 @@ export function App() {
 				<div>
 					<p style={{ textDecoration: "underline", marginBottom: 8 }}>Some Text</p>
 					<div style={{ display: "flex", marginTop: 8, height: 20, border: "1px dotted red" }}>
-						{notes.map((n, idx) => <Note isCurr={currNote === idx} key={idx} s={n} />)}
+						{notes.map((n, idx) => <Note isCurr={activeNoteIdx === idx} key={idx} s={n} />)}
 					</div>
 				</div>
 				<div>
@@ -308,7 +340,7 @@ export function App() {
 						<label htmlFor="deg" style={{ marginRight: 8 }}>Deg:</label>
 						<input
 							style={{ width: 53 }} 
-							value={deg} 
+							value={currNote.deg} 
 							type="text" 
 							id="deg" 
 						/>
@@ -319,7 +351,7 @@ export function App() {
 						<label htmlFor="shift" style={{ marginRight: 8 }}>Shift:</label>
 						<input
 							style={{ width: 53 }} 
-							value={shift} 
+							value={currNote.shift} 
 							type="text" 
 							id="scale" 
 						/>
@@ -330,7 +362,7 @@ export function App() {
 						<label htmlFor="shift" style={{ marginRight: 8 }}>Dur:</label>
 						<input
 							style={{ width: 53 }} 
-							value={dur} 
+							value={currNote.dur} 
 							type="text" 
 							id="scale" 
 						/>
@@ -342,8 +374,8 @@ export function App() {
 						<select
 							ref={intSelectRef}
 							style={{ width: 60, height: 21 }}
-							value={int}
-							onChange={e => setInt(e.target.value as DNoteInt)}
+							value={currNote.int}
+							onChange={e => updateNote("int", e.target.value as DNoteInt)}
 							id="int"
 						>
 							{DNOTE_INTS.map(v => (
@@ -357,10 +389,10 @@ export function App() {
 						<label htmlFor="shift" style={{ marginRight: 8 }}>DurMod:</label>
 						<input
 							ref={durModInputRef}
-							onChange={e => setDurMod(Number(e.target.value))} 
+							onChange={e => updateNote("durMod", Number(e.target.value))} 
 							style={{ width: 53 }} 
-							value={durMod ?? ""} 
-							type={durMod ? "number" : "text"}
+							value={currNote.durMod ?? ""} 
+							type={currNote.durMod ? "number" : "text"}
 							step={25} 
 							id="scale" 
 						/>
@@ -403,26 +435,28 @@ function toggleInputFocus<T extends HTMLElement>(ref: React.RefObject<T | null>)
 	}
 }
 
-function cycleArrayValue<T>(direction: "down" | "up", array: T[], currentValue: T): T {
-	if (!isStringOrNumberArray(array)) throw new Error(`@cycleArrayValue: Array must contain only strings or numbers`)
-
-	const currentIndex = array.findIndex(item => item === currentValue)
-
-	let nextIndex
-	if (direction === "down") {
-		nextIndex = (currentIndex - 1 + array.length) % array.length
-	} else {
-		nextIndex = (currentIndex + 1) % array.length
+function cycleArrayValue<T extends string | number>(
+	direction: "down" | "up",
+	array: readonly T[],
+	currentValue: T
+): T {
+	if (!array.every(i => typeof i === "string" || typeof i === "number")) {
+		throw new Error(`@cycleArrayValue: Array must contain only strings or numbers`);
 	}
-	
-	return array[nextIndex]
-}
 
-function isStringOrNumberArray(arr: unknown[]): boolean {
-	if (arr.length === 0) return true
-	
-	const t = typeof arr[0]
-	if (t !== "string" && t !== "number") throw new Error(`@isStringOrNumberArray: unsupported type: ${t}`)
+	let currentIndex = array.findIndex(item => item === (currentValue as T));
 
-	return arr.every(el => typeof el === t)
+	if (currentIndex === -1) {
+		const s = String(currentValue);
+		currentIndex = array.findIndex(item => String(item) === s);
+	}
+
+	if (currentIndex === -1) {
+		throw new Error(`@cycleArrayValue: currentValue (${currentValue}) not found in array`);
+	}
+
+	const delta = direction === "down" ? -1 : 1;
+	const nextIndex = (currentIndex + delta + array.length) % array.length;
+
+	return array[nextIndex];
 }
