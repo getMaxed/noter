@@ -75,6 +75,9 @@ export function App() {
 	
 	const [notes, setNotes] = React.useState<DNote[]>([DEFAULT_NOTE])
 	const [activeNoteIdx, setActiveNoteIdx] = React.useState(0)
+	const [copyStartIdx, setCopyStartIdx] = React.useState<null | number>(null)
+
+	console.log({copyStartIdx})
 
 	const currNote = React.useMemo(() => notes[activeNoteIdx], [notes, activeNoteIdx])
 
@@ -116,8 +119,6 @@ export function App() {
 	|--------------------------------------------------------------------------
 	*/
 
-	console.log({activeNoteIdx})
-
 	React.useEffect(() => {
 		const keyboardEventHandler = (e: KeyboardEvent) => {
 			const isLatestNote = activeNoteIdx === notes.length - 1
@@ -147,11 +148,17 @@ export function App() {
 				*/
 
 				case "ArrowLeft":
+					// trg
 					if (e.shiftKey) {
-						console.log('SHIFT IS PRESSED')
+						console.log('shiftedd')
+						if (!activeNoteIdx) {
+							setCopyStartIdx(activeNoteIdx)
+						}
 					} else {
-						setActiveNoteIdx(s => s ? s - 1 : s)
+						setCopyStartIdx(null)
 					}
+
+					setActiveNoteIdx(s => s ? s - 1 : s)
 					break;
 
 				/*
