@@ -1,28 +1,17 @@
-// maje bytu NEXT...
-...when at the index #1: can't select
-
-- messed up jaksho ja ydaljajy z kincja
-- create 4 notes -> select 3 -> delete: BUG !!!
-- not working when first SHIFT + RIGHT -> then SHIFT + LEFT
-
-PHASE 1
-- after deletion: make sure we're landing at the right one
 - ...determine stuff what needs to be done (go to the end etc)
-- add useCallback for note function
-- add mass delete functionality
+- bug: not working when start selecting from the beginning and then going left
 - add mass edit functionality
 - add copy functionality
 - add paste functionality
-- add undo functionality
-- add redo functionality
+- add undo functionality (show undo/redo index, limit only to 5)
+- add redo functionality (show undo/redo index, limit only to 5)
 // !!! i need to make sure that EVERYTHING IS WORKING WELL !!! ALL OF THE FUNCTIONALITY !!! DOCUMENT EVERYTHING !!!
-
-
 
 PHASE 1: FINAL
 - full cleanup -> refactor -> reorganize
   - refine terminology (namings)
   - add hook: registerButtons
+  - add useCallback for note function
 
 PHASE 2
 - add rows support
@@ -59,8 +48,8 @@ SHIFT + PGDWN
 
 TO DO: ADD CONTROLS
 - play
-- play from beginning of riff
-- play from beginning of part
+- jump to beginning of riff
+- jump to beginning of part
 
 
 

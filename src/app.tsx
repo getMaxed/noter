@@ -186,13 +186,16 @@ export function App() {
 				|--------------------------------------------------------------------------
 				*/
 
+				// TODO: refactor this whole thing
 				case "Delete": {
 					if (notes.length <= 1) return
 					const newNotes = notes.filter((_, idx) => !isNoteActive(idx))
-					setNotes(newNotes)
+					console.log('?#@', newNotes.length === 0 ? [notes[0]] : newNotes)
+					setNotes(newNotes.length === 0 ? [notes[0]] : newNotes)
 
-					// trg: TODO: refactor
-					if (selectionStartIdx !== null) {
+					if (newNotes.length === 0) {
+						setActiveNoteIdx(0)
+					} else if (selectionStartIdx !== null) {
 						setActiveNoteIdx(Math.min(newNotes.length - 1, activeNotesRange[0]))
 					} else {
 						setActiveNoteIdx(Math.min(newNotes.length - 1, activeNoteIdx - (isLatestNote ? 1 : 0)))
