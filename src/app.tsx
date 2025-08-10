@@ -77,7 +77,21 @@ export function App() {
 	const [activeNoteIdx, setActiveNoteIdx] = React.useState(0)
 	const [copyStartIdx, setCopyStartIdx] = React.useState<null | number>(null)
 
-	console.log({copyStartIdx})
+	const activeNotesRange = React.useMemo(() => {
+		if (!copyStartIdx) return []
+		return [Math.min(activeNoteIdx, copyStartIdx), Math.max(activeNoteIdx, copyStartIdx)]
+
+	}, [activeNoteIdx, copyStartIdx])
+
+	function isNoteActive(idx: number) {
+		const isCopying = activeNotesRange.length
+		if (!isCopying) return idx === activeNoteIdx
+		
+		const [min, max] = activeNotesRange
+		return idx >= min && idx <= max
+	}
+
+	console.log({activeNotesRange})
 
 	const currNote = React.useMemo(() => notes[activeNoteIdx], [notes, activeNoteIdx])
 
@@ -122,7 +136,7 @@ export function App() {
 	React.useEffect(() => {
 		const keyboardEventHandler = (e: KeyboardEvent) => {
 			const isLatestNote = activeNoteIdx === notes.length - 1
-			console.log('Key pressed: ', e.key)
+			// console.log('Key pressed: ', e.key)
 			switch (e.key) {
 				/*
 				|--------------------------------------------------------------------------
@@ -131,6 +145,15 @@ export function App() {
 				*/
 				
 				case "ArrowRight":
+					// TODO: separate out this functionality
+					if (e.shiftKey) {
+						if (!copyStartIdx) {
+							setCopyStartIdx(activeNoteIdx)
+						}
+					} else {
+						setCopyStartIdx(null)
+					}
+
 					setActiveNoteIdx(s => s + 1)
 					if (isLatestNote) {
 						setNotes(prev => {
@@ -148,10 +171,8 @@ export function App() {
 				*/
 
 				case "ArrowLeft":
-					// trg
 					if (e.shiftKey) {
-						console.log('shiftedd')
-						if (!activeNoteIdx) {
+						if (!copyStartIdx) {
 							setCopyStartIdx(activeNoteIdx)
 						}
 					} else {
@@ -384,7 +405,8 @@ export function App() {
 				<div>
 					<p style={{ textDecoration: "underline", marginBottom: 8 }}>Some Text</p>
 					<div style={{ display: "flex", marginTop: 8, height: 20, border: "1px dotted red" }}>
-						{notes.map((n, idx) => <Note isCurr={activeNoteIdx === idx} key={idx} s={n} />)}
+					{/* trg */}
+						{notes.map((n, idx) => <Note isActive={isNoteActive(idx)} key={idx} s={n} />)}
 					</div>
 				</div>
 				<div>
@@ -459,7 +481,7 @@ export function App() {
 export default App
 
 type NoteProps = { 
-	isCurr: boolean
+	isActive: boolean
 	s: DNote 
 }
 
@@ -469,13 +491,13 @@ function Riff(notes: DNote[]) {
 	}, [notes])
 }
 
-function Note({ s, isCurr }: NoteProps) {
+function Note({ s, isActive }: NoteProps) {
 	const { deg, dur } = s
 	const width = 100 / dur
 	return (
 		<div style={{ 
 			border: "1px solid black", 
-			backgroundColor: isCurr ? "white" : "DarkTurquoise", 
+			backgroundColor: isActive ? "white" : "DarkTurquoise", 
 			height: 20, 
 			width: `${width}%`, 
 			fontSize: 12, 

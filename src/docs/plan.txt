@@ -1,6 +1,9 @@
+- add select functionality
+- add delete multiple functionality
+
 TO DO
 - add delete functionality
-- add select functionality
+
 - add mass delete + mass edit functionality
 - add copy functionality
 - add paste functionality
