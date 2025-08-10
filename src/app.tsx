@@ -77,16 +77,14 @@ export function App() {
 	const [selectionStartIdx, setSelectionStartIdx] = React.useState<null | number>(null)
 
 	const activeNotesRange = React.useMemo(() => {
-		if (!selectionStartIdx) return []
+		if (selectionStartIdx === null) return []
 		return [Math.min(activeNoteIdx, selectionStartIdx), Math.max(activeNoteIdx, selectionStartIdx)]
 
 	}, [activeNoteIdx, selectionStartIdx])
 
-	console.log('!!!', activeNotesRange)
-
 	function isNoteActive(idx: number) {
-		const isCopying = activeNotesRange.length
-		if (!isCopying) return idx === activeNoteIdx
+		const isSelected = activeNotesRange.length
+		if (!isSelected) return idx === activeNoteIdx
 		
 		const [min, max] = activeNotesRange
 		return idx >= min && idx <= max
@@ -146,14 +144,13 @@ export function App() {
 				case "ArrowRight":
 					// TODO: separate out this functionality
 					if (e.shiftKey) {
-						if (!selectionStartIdx) {
+						if (selectionStartIdx === null) {
 							setSelectionStartIdx(activeNoteIdx)
 						}
 					} else {
 						setSelectionStartIdx(null)
 					}
 
-					console.log({isLatestNote})
 					setActiveNoteIdx(s => s + 1)
 					if (isLatestNote) {
 						setNotes(prev => {
@@ -164,6 +161,7 @@ export function App() {
 						});
 					}
 					break;
+
 				/*
 				|--------------------------------------------------------------------------
 				| ASDF
@@ -192,10 +190,14 @@ export function App() {
 					if (notes.length <= 1) return
 					const newNotes = notes.filter((_, idx) => !isNoteActive(idx))
 					setNotes(newNotes)
-					console.log(1, activeNoteIdx - (isLatestNote ? 1 : 0))
-					console.log(2, newNotes.length - 1)
-					console.log(3, Math.min(activeNoteIdx - (isLatestNote ? 1 : 0), newNotes.length - 1))
-					setActiveNoteIdx(Math.min(activeNoteIdx - (isLatestNote ? 1 : 0), newNotes.length - 1))
+
+					// trg: TODO: refactor
+					if (selectionStartIdx !== null) {
+						setActiveNoteIdx(Math.min(newNotes.length - 1, activeNotesRange[0]))
+					} else {
+						setActiveNoteIdx(Math.min(newNotes.length - 1, activeNoteIdx - (isLatestNote ? 1 : 0)))
+					}
+					
 					setSelectionStartIdx(null)
 					break;
 				}
@@ -346,7 +348,7 @@ export function App() {
 
 		window.addEventListener("keydown", keyboardEventHandler)
 		return () => window.removeEventListener("keydown", keyboardEventHandler)
-	}, [notes, activeNoteIdx])
+	}, [notes, activeNoteIdx, activeNotesRange])
 	
 	/*
 	|--------------------------------------------------------------------------

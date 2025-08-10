@@ -1,3 +1,10 @@
+// maje bytu NEXT...
+...when at the index #1: can't select
+
+- messed up jaksho ja ydaljajy z kincja
+- create 4 notes -> select 3 -> delete: BUG !!!
+- not working when first SHIFT + RIGHT -> then SHIFT + LEFT
+
 PHASE 1
 - after deletion: make sure we're landing at the right one
 - ...determine stuff what needs to be done (go to the end etc)
@@ -9,6 +16,8 @@ PHASE 1
 - add undo functionality
 - add redo functionality
 // !!! i need to make sure that EVERYTHING IS WORKING WELL !!! ALL OF THE FUNCTIONALITY !!! DOCUMENT EVERYTHING !!!
+
+
 
 PHASE 1: FINAL
 - full cleanup -> refactor -> reorganize
@@ -41,9 +50,12 @@ URL STRUCTURE
 
 
 
-
-
-
+HOME
+END
+SHIFT + HOME
+SHIFT + END
+SHIFT + PGUP
+SHIFT + PGDWN
 
 TO DO: ADD CONTROLS
 - play
