@@ -1,15 +1,15 @@
 import React from 'react'
 import { NOTES, NOTES_IN_ORDER } from './constants/notes'
 
+const DNOTE_DURS: DNoteDur[] = [1, 2, 4, 8, 16, 32]
+const DNOTE_INTS: DNoteInt[] = ["1", "2min", "2maj", "3", "3min", "3maj", "4", "5", "6", "6min", "6maj", "7", "7min", "7maj", "8"] 
+const SHIFT_VALS: number[] = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
+
 /*
 |--------------------------------------------------------------------------
 | DEFAULTS
 |--------------------------------------------------------------------------
 */
-
-const DNOTE_DURS: DNoteDur[] = [1, 2, 4, 8, 16, 32]
-const DNOTE_INTS: DNoteInt[] = ["1", "2min", "2maj", "3", "3min", "3maj", "4", "5", "6", "6min", "6maj", "7", "7min", "7maj", "8"] 
-const SHIFT_VALS: number[] = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
 
 const DEFAULT_TEMPO = 140
 const DEFAULT_SCALE = NOTES.E2.name
@@ -71,17 +71,18 @@ export function App() {
 	| PLAYER
 	|--------------------------------------------------------------------------
 	*/
-
 	
 	const [notes, setNotes] = React.useState<DNote[]>([DEFAULT_NOTE])
 	const [activeNoteIdx, setActiveNoteIdx] = React.useState(0)
-	const [copyStartIdx, setCopyStartIdx] = React.useState<null | number>(null)
+	const [selectionStartIdx, setSelectionStartIdx] = React.useState<null | number>(null)
 
 	const activeNotesRange = React.useMemo(() => {
-		if (!copyStartIdx) return []
-		return [Math.min(activeNoteIdx, copyStartIdx), Math.max(activeNoteIdx, copyStartIdx)]
+		if (!selectionStartIdx) return []
+		return [Math.min(activeNoteIdx, selectionStartIdx), Math.max(activeNoteIdx, selectionStartIdx)]
 
-	}, [activeNoteIdx, copyStartIdx])
+	}, [activeNoteIdx, selectionStartIdx])
+
+	console.log('!!!', activeNotesRange)
 
 	function isNoteActive(idx: number) {
 		const isCopying = activeNotesRange.length
@@ -90,8 +91,6 @@ export function App() {
 		const [min, max] = activeNotesRange
 		return idx >= min && idx <= max
 	}
-
-	console.log({activeNotesRange})
 
 	const currNote = React.useMemo(() => notes[activeNoteIdx], [notes, activeNoteIdx])
 
@@ -147,13 +146,14 @@ export function App() {
 				case "ArrowRight":
 					// TODO: separate out this functionality
 					if (e.shiftKey) {
-						if (!copyStartIdx) {
-							setCopyStartIdx(activeNoteIdx)
+						if (!selectionStartIdx) {
+							setSelectionStartIdx(activeNoteIdx)
 						}
 					} else {
-						setCopyStartIdx(null)
+						setSelectionStartIdx(null)
 					}
 
+					console.log({isLatestNote})
 					setActiveNoteIdx(s => s + 1)
 					if (isLatestNote) {
 						setNotes(prev => {
@@ -172,11 +172,11 @@ export function App() {
 
 				case "ArrowLeft":
 					if (e.shiftKey) {
-						if (!copyStartIdx) {
-							setCopyStartIdx(activeNoteIdx)
+						if (!selectionStartIdx) {
+							setSelectionStartIdx(activeNoteIdx)
 						}
 					} else {
-						setCopyStartIdx(null)
+						setSelectionStartIdx(null)
 					}
 
 					setActiveNoteIdx(s => s ? s - 1 : s)
@@ -188,11 +188,17 @@ export function App() {
 				|--------------------------------------------------------------------------
 				*/
 
-				case "Delete":
+				case "Delete": {
 					if (notes.length <= 1) return
-					setNotes(prev => prev.filter((_, idx) => idx !== activeNoteIdx))
-					setActiveNoteIdx(activeNoteIdx - (isLatestNote ? 1 : 0))
+					const newNotes = notes.filter((_, idx) => !isNoteActive(idx))
+					setNotes(newNotes)
+					console.log(1, activeNoteIdx - (isLatestNote ? 1 : 0))
+					console.log(2, newNotes.length - 1)
+					console.log(3, Math.min(activeNoteIdx - (isLatestNote ? 1 : 0), newNotes.length - 1))
+					setActiveNoteIdx(Math.min(activeNoteIdx - (isLatestNote ? 1 : 0), newNotes.length - 1))
+					setSelectionStartIdx(null)
 					break;
+				}
 
 				/*
 				|--------------------------------------------------------------------------
@@ -340,8 +346,7 @@ export function App() {
 
 		window.addEventListener("keydown", keyboardEventHandler)
 		return () => window.removeEventListener("keydown", keyboardEventHandler)
-	}, [activeNoteIdx])
-
+	}, [notes, activeNoteIdx])
 	
 	/*
 	|--------------------------------------------------------------------------
@@ -485,11 +490,11 @@ type NoteProps = {
 	s: DNote 
 }
 
-function Riff(notes: DNote[]) {
-	const rows = React.useMemo(() => {
-		const a = []
-	}, [notes])
-}
+// function Riff(notes: DNote[]) {
+// 	const rows = React.useMemo(() => {
+// 		const a = []
+// 	}, [notes])
+// }
 
 function Note({ s, isActive }: NoteProps) {
 	const { deg, dur } = s

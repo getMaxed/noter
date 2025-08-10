@@ -1,83 +1,82 @@
-- add select functionality
-- add delete multiple functionality
-
-TO DO
-- add delete functionality
-
-- add mass delete + mass edit functionality
+PHASE 1
+- after deletion: make sure we're landing at the right one
+- ...determine stuff what needs to be done (go to the end etc)
+- add useCallback for note function
+- add mass delete functionality
+- add mass edit functionality
 - add copy functionality
 - add paste functionality
-- undo
-- redo
+- add undo functionality
+- add redo functionality
+// !!! i need to make sure that EVERYTHING IS WORKING WELL !!! ALL OF THE FUNCTIONALITY !!! DOCUMENT EVERYTHING !!!
+
+PHASE 1: FINAL
+- full cleanup -> refactor -> reorganize
+  - refine terminology (namings)
+  - add hook: registerButtons
+
+PHASE 2
+- add rows support
+
+LATER PHASES
 - add blank note (0)
-- by default: create a new row
+- notation: each element has to have its color
+
+WATCH
+- `+` and `-` buttons
+
+ENTITIES
+- section: main, verse, chorus, otro
+  - segment (riffs, melodies, accoustic parts)
+    - instruments
+    - drums
+- song: array of sections: [main, verse, chorus, verse, chorus, outro]
+
+URL STRUCTURE
+- musicm.app/write
+- musicm.app/segments/write/{segmentId}
+- musicm.app/sections/write/{sectionId}
+- musicm.app/songs/write/{songId}
+
+
+
+
+
+
+
+
+TO DO: ADD CONTROLS
+- play
+- play from beginning of riff
+- play from beginning of part
+
+
+
 - write a good notation with colors
   - deg: bold
 
-....there's also + and -
 
-- notation: each element has to have its color
-
-- ...also make sure we read from the proper state
-
-- refine terminology
-
-....i don't want to click NEXT every time
 
 IF noteKey: create next one blank
 IF changing settings - applied to prev one
 IF changing note - set that note
 
 
-type DNote = {
-    shift: number, // -5 - 5
-    deg: NoteDeg
-    int: NoteInt
-    dur: NoteDur
-    durMod: null | number
-}
-
-- before prompting: cleanup everythingh
-
-
-- add all controls
-- cleanup everything
-- add main styles
-- refactor shit
-
-CONTROLS
-- play
-- play from beginning of riff
-- play from beginning of part
 
 ADDT KEYS
-- add metadata
+
+
+- add metadata -> create draft/riff
 - add drums
 - add additional instruments
 
-URL Structure
-- musicm.app/write
-- musicm.app/write/{draftId}
-- musicm.app/riffs/write/{riffId}
-- musicm.app/parts/write/{partId}
-- musicm.app/songs/write/{songId}
+
 
 QUESTIONS
 - what is the best way to store that info for further processing and analytics? what format?
 
 
-- add hook: registerButtons
 
-
-- tempo
-
-- scale
-- metronome
-
-- shift
-- dur
-- int
-- durMod
 
 
 
@@ -110,21 +109,13 @@ durModInputRef
   - duration: 8
   - interval: 1
 
-Hot Keys
-- ...i need some flag to start "recording"
-- "`": edit mode
-- 0: go to the notes
-  - 1 @ 2 3 # 4 $ 5 6 ^ 7 &: notes
-  - arrows: going through the notes
 
-  Combinations
-  - i/j
-  - e/r
-  - q/w
-  - a/s
-  - d/f
+
 
   MISC
   - inteval: will open select, to select from
   - dur: will be for a single note
   - i need to have metadata dialog on pressing some key: artist/album/song
+
+  - ENTER: open metadata form
+  - BACKSPACE: segment metadata -> segment -> section
