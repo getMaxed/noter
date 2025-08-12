@@ -1,4 +1,3 @@
-- ...determine stuff what needs to be done (go to the end etc)
 - bug: not working when start selecting from the beginning and then going left
 - add mass edit functionality
 - add copy functionality

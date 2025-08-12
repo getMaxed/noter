@@ -170,7 +170,7 @@ export function App() {
 
 				case "ArrowLeft":
 					if (e.shiftKey) {
-						if (!selectionStartIdx) {
+						if (selectionStartIdx === null) {
 							setSelectionStartIdx(activeNoteIdx)
 						}
 					} else {
