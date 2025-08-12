@@ -1,5 +1,6 @@
 import React from 'react'
 import { NOTES, NOTES_IN_ORDER } from './constants/notes'
+import { playMelody } from './audio-player'
 
 const DNOTE_DURS: DNoteDur[] = [1, 2, 4, 8, 16, 32]
 const DNOTE_INTS: DNoteInt[] = ["1", "2min", "2maj", "3", "3min", "3maj", "4", "5", "6", "6min", "6maj", "7", "7min", "7maj", "8"] 
@@ -12,7 +13,7 @@ const SHIFT_VALS: number[] = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
 */
 
 const DEFAULT_TEMPO = 140
-const DEFAULT_SCALE = NOTES.E2.name
+const DEFAULT_SCALE = NOTES.E3.name
 const DEFAULT_METRONOME_FREQ: DNoteDur = 4
 
 const DEFAULT_DEG: DNoteDeg = "1"
@@ -57,6 +58,9 @@ const KEY_DEG_S6 = "y"
 const KEY_DEG_7 = "7"
 const KEY_DEG_S7 = "u"
 
+// TRG
+const KEY_PLAY = ' '
+
 // NOTE SETTINGS
 const KEY_SHIFT_DOWN = "o"
 const KEY_SHIFT_UP = "p"
@@ -75,6 +79,8 @@ export function App() {
 	const [notes, setNotes] = React.useState<DNote[]>([DEFAULT_NOTE])
 	const [activeNoteIdx, setActiveNoteIdx] = React.useState(0)
 	const [selectionStartIdx, setSelectionStartIdx] = React.useState<null | number>(null)
+
+	console.log({notes})
 
 	const activeNotesRange = React.useMemo(() => {
 		if (selectionStartIdx === null) return []
@@ -133,7 +139,7 @@ export function App() {
 	React.useEffect(() => {
 		const keyboardEventHandler = (e: KeyboardEvent) => {
 			const isLatestNote = activeNoteIdx === notes.length - 1
-			// console.log('Key pressed: ', e.key)
+			console.log('Key pressed: ', e.key)
 			switch (e.key) {
 				/*
 				|--------------------------------------------------------------------------
@@ -204,6 +210,16 @@ export function App() {
 					setSelectionStartIdx(null)
 					break;
 				}
+
+				/*
+				|--------------------------------------------------------------------------
+				| ASDF23
+				|--------------------------------------------------------------------------
+				*/
+				
+				case KEY_PLAY:
+					playMelody({ notes })
+					break;
 
 				/*
 				|--------------------------------------------------------------------------

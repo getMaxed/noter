@@ -1,7 +1,7 @@
 import { NOTES } from "./notes";
 
 export const DEFAULT_MELODY_SETTINGS: Required<MelodySettings> = {
-	root: NOTES.E2,
+	root: NOTES.E3,
 	dur: 8,
 	int: 1,
 	tempo: 160,

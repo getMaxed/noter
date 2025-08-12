@@ -15,6 +15,8 @@ export async function playMelody(melody: Melody): Promise<void> {
 	await Tone.start()
 	let currentTime = Tone.now()
 
+	console.log({playableNotes})
+
 	playableNotes.forEach(note => {
 		const beatsForThisNote = 4 / note.dur
 		const duration = beatsForThisNote * beatDuration * (note.modLengthByPerc ?? 100) / 100

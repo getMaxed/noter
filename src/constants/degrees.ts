@@ -1,6 +1,6 @@
 export const MAP_DEGREE_TO_INTERVAL_SEMITONE: Record<
-	DNoteDegree,
-	Record<DNoteInterval, number>
+	DNoteDeg,
+	Record<DNoteInt & {"": number}, number>
 > = {
 	"1": {
 		"": 0,
@@ -79,7 +79,7 @@ export const MAP_DEGREE_TO_INTERVAL_SEMITONE: Record<
 		i8: 12,
 	},
 	s3: {
-		"": 3,
+		"": 4,
 		i1: 0,
 		i2: 2,
 		i2min: 1,
@@ -174,7 +174,7 @@ export const MAP_DEGREE_TO_INTERVAL_SEMITONE: Record<
 		i8: 12,
 	},
 	s6: {
-		"": 8,
+		"": 9,
 		i1: 0,
 		i2: 2,
 		i2min: 1,
