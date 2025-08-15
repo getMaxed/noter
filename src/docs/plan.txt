@@ -1,3 +1,8 @@
+- "scale": rename to root
+- cancel when pressing PLAY again
+
+
+
 - bug: not working when start selecting from the beginning and then going left
 - add mass edit functionality
 - add copy functionality

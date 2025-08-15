@@ -80,8 +80,6 @@ export function App() {
 	const [activeNoteIdx, setActiveNoteIdx] = React.useState(0)
 	const [selectionStartIdx, setSelectionStartIdx] = React.useState<null | number>(null)
 
-	console.log({notes})
-
 	const activeNotesRange = React.useMemo(() => {
 		if (selectionStartIdx === null) return []
 		return [Math.min(activeNoteIdx, selectionStartIdx), Math.max(activeNoteIdx, selectionStartIdx)]
@@ -226,7 +224,10 @@ export function App() {
 				*/
 				
 				case KEY_PLAY:
-					playMelody({ notes })
+					playMelody({ notes, settings: {
+						root: NOTES[scale],					
+						tempo: tempo
+					} })
 					break;
 
 				/*
@@ -375,7 +376,7 @@ export function App() {
 
 		window.addEventListener("keydown", keyboardEventHandler)
 		return () => window.removeEventListener("keydown", keyboardEventHandler)
-	}, [notes, activeNoteIdx, activeNotesRange])
+	}, [notes, activeNoteIdx, activeNotesRange, scale])
 	
 	/*
 	|--------------------------------------------------------------------------
