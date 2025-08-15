@@ -21,5 +21,6 @@ export function getBeatDuration(tempo: number): number {
 }
 
 export function getPlayableNotes(notes: NoteEntry[]): PlayableNote[] {
+    console.log(34, notes)
     return notes.map(n => ({ ...n, notes: n.pitchNotes.map(n => n.label) }))
 }

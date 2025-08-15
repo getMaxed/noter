@@ -148,6 +148,10 @@ export function App() {
 				*/
 				
 				case "ArrowRight":
+					if (document.activeElement && document.activeElement !== document.body) {
+						(document.activeElement as HTMLElement).blur();
+					}
+
 					// TODO: separate out this functionality
 					if (e.shiftKey) {
 						if (selectionStartIdx === null) {
@@ -175,6 +179,10 @@ export function App() {
 				*/
 
 				case "ArrowLeft":
+					if (document.activeElement && document.activeElement !== document.body) {
+						(document.activeElement as HTMLElement).blur();
+					}
+
 					if (e.shiftKey) {
 						if (selectionStartIdx === null) {
 							setSelectionStartIdx(activeNoteIdx)
@@ -476,6 +484,7 @@ export function App() {
 							ref={intSelectRef}
 							style={{ width: 60, height: 21 }}
 							value={currNote.int}
+							// trg
 							onChange={e => updateNote("int", e.target.value as DNoteInt)}
 							id="int"
 						>

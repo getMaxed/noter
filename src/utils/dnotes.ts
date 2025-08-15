@@ -39,10 +39,6 @@ export function parseDNotesIntoNoteEntrys(
 
         const baseIdx = rootNoteIdx + shiftSemitones
 
-        console.log('deg', deg)
-        console.log(1, baseIdx)
-        console.log(5, MAP_DEGREE_TO_BASE_SEMITONE)
-        console.log(2, MAP_DEGREE_TO_BASE_SEMITONE[deg])
         const noteIdx = baseIdx + MAP_DEGREE_TO_BASE_SEMITONE[deg]
         const note = NOTES_IN_ORDER[noteIdx]
 
@@ -50,6 +46,7 @@ export function parseDNotesIntoNoteEntrys(
             return [note]
         }
 
+        console.log(321, deg, int)
         const intervalSemitones = MAP_DEGREE_TO_INTERVAL_SEMITONE[deg][int]
         const intervalNoteIdx = noteIdx + intervalSemitones
         const intervalNote = NOTES_IN_ORDER[intervalNoteIdx]
