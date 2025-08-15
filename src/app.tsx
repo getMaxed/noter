@@ -439,7 +439,6 @@ export function App() {
 				<div>
 					<p style={{ textDecoration: "underline", marginBottom: 8 }}>Some Text</p>
 					<div style={{ display: "flex", marginTop: 8, height: 20, border: "1px dotted red" }}>
-					{/* trg */}
 						{notes.map((n, idx) => <Note isActive={isNoteActive(idx)} key={idx} s={n} />)}
 					</div>
 				</div>
@@ -484,8 +483,10 @@ export function App() {
 							ref={intSelectRef}
 							style={{ width: 60, height: 21 }}
 							value={currNote.int}
-							// trg
-							onChange={e => updateNote("int", e.target.value as DNoteInt)}
+							onChange={e => {
+								if (!(document.activeElement && document.activeElement !== document.body)) return
+								updateNote("int", e.target.value as DNoteInt)
+							}}
 							id="int"
 						>
 							{DNOTE_INTS.map(v => (
