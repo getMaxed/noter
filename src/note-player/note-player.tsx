@@ -570,9 +570,10 @@ type NoteProps = {
 // 	}, [notes])
 // }
 
-function Note({ s, isActive }: NoteProps) {
+function Note({ s, isActive, displayDur }: NoteProps) {
     const { deg, dur, int, shift } = s
-    const width = 100 / dur
+    const width = 100 / (displayDur || dur)
+    
     return (
         <div style={{ 
             border: "1px solid black", 
@@ -583,11 +584,15 @@ function Note({ s, isActive }: NoteProps) {
             textAlign: "center", 
             display: "flex",
             alignItems: "center",
-            justifyContent: "center"
+            justifyContent: "center",
+            boxSizing: "border-box", // This ensures borders are included in height
+            lineHeight: 1, // Prevents text from affecting height
+            margin: 0,
+            padding: 0
         }}>
             <span style={{ fontWeight: "bold" }}>d{renderShift(shift)}{deg}</span>-
             <span style={{ textDecoration: "underline" }}>i{int}</span>-
-            <span style={{}}>x{dur}</span>
+            <span style={{}}>x{displayDur || dur}</span>
         </div>
     )
 
