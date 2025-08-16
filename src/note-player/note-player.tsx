@@ -19,8 +19,6 @@ export function NotePlayer() {
 
     }, [activeNoteIdx, selectionStartIdx])
 
-    const isBodyNotFocused = document.activeElement !== document.body
-
     function isNoteActive(idx: number) {
         const isSelected = activeNotesRange.length
         if (!isSelected) return idx === activeNoteIdx
@@ -51,8 +49,8 @@ export function NotePlayer() {
     const [tempo, setTempo] = React.useState(DEFAULT_TEMPO)
     const tempoInputRef = React.useRef<HTMLInputElement>(null)
     
-    // Scale
-    const [scale, setScale] = React.useState(DEFAULT_SCALE)
+    // Root
+    const [root, setRoot] = React.useState(DEFAULT_SCALE)
 
     // Metronome
     const [isMetronomeOn, setIsMetronomeOn] = React.useState(false)
@@ -76,6 +74,8 @@ export function NotePlayer() {
     React.useEffect(() => {
         const keyboardEventHandler = (e: KeyboardEvent) => {
             const isLatestNote = activeNoteIdx === notes.length - 1
+            const isBodyNotFocused = document.activeElement !== document.body
+            console.log({isBodyNotFocused})
             // console.log('Key pressed: ', e.key)
             switch (e.key) {
                 case "Escape":
@@ -164,7 +164,7 @@ export function NotePlayer() {
                 
                 case KEY_PLAY:
                     playMelody({ notes, settings: {
-                        root: NOTES[scale],					
+                        root: NOTES[root],					
                         tempo: tempo
                     } })
                     break;
@@ -186,11 +186,11 @@ export function NotePlayer() {
                 */
                 
                 case KEY_SCALE_DOWN:
-                    setScale(s => cycleArrayValue("down", NOTES_IN_ORDER.map(o => o.name), s))
+                    setRoot(s => cycleArrayValue("down", NOTES_IN_ORDER.map(o => o.name), s))
                     break;
 
                 case KEY_SCALE_UP:
-                    setScale(s => cycleArrayValue("up", NOTES_IN_ORDER.map(o => o.name), s))
+                    setRoot(s => cycleArrayValue("up", NOTES_IN_ORDER.map(o => o.name), s))
                     break;
         
                 /*
@@ -343,9 +343,9 @@ export function NotePlayer() {
 
                 case KEY_SELECT_INT_FOCUS_TOGGLE:
                     toggleInputFocus(intSelectRef)
-                    setTimeout(() => {
-                        console.log('Now activeElement is:', document.activeElement)
-                    }, 0)
+                    // setTimeout(() => {
+                    //     console.log('Now activeElement is:', document.activeElement)
+                    // }, 0)
                     break
 
                 /*	
@@ -363,7 +363,7 @@ export function NotePlayer() {
 
         window.addEventListener("keydown", keyboardEventHandler)
         return () => window.removeEventListener("keydown", keyboardEventHandler)
-    }, [notes, activeNoteIdx, activeNotesRange, scale, tempo])
+    }, [notes, activeNoteIdx, activeNotesRange, root, tempo])
     
     /*
     |--------------------------------------------------------------------------
@@ -390,12 +390,12 @@ export function NotePlayer() {
 
                 {/* Scale */}
                 <div style={{ marginBottom: 12 }}>
-                    <label htmlFor="scale" style={{ marginRight: 8 }}>Scale:</label>
+                    <label htmlFor="root" style={{ marginRight: 8 }}>Scale:</label>
                     <input
                         style={{ width: 40 }} 
-                        value={scale} 
+                        value={root} 
                         type="text" 
-                        id="scale" 
+                        id="root" 
                     />
                 </div>
 
@@ -449,7 +449,7 @@ export function NotePlayer() {
                             style={{ width: 53 }} 
                             value={currNote.shift} 
                             type="text" 
-                            id="scale" 
+                            id="root" 
                         />
                     </div>
 
@@ -460,7 +460,7 @@ export function NotePlayer() {
                             style={{ width: 53 }} 
                             value={currNote.dur} 
                             type="text" 
-                            id="scale" 
+                            id="root" 
                         />
                     </div>
 
@@ -496,7 +496,7 @@ export function NotePlayer() {
                             value={currNote.durMod ?? ""} 
                             type={currNote.durMod ? "number" : "text"}
                             step={25} 
-                            id="scale" 
+                            id="root" 
                         />
                     </div>
                 </div>

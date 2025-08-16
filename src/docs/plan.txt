@@ -1,9 +1,5 @@
 - int: make sure sounds are good
 
-
-
-
-- "scale": rename to root
 - cancel when pressing PLAY again
 
 
