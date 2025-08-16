@@ -15,8 +15,6 @@ export async function playMelody(melody: Melody): Promise<void> {
 	await Tone.start()
 	let currentTime = Tone.now()
 
-	console.log({playableNotes})
-
 	playableNotes.forEach(note => {
 		const beatsForThisNote = 4 / note.dur
 		const duration = beatsForThisNote * beatDuration * (note.modLengthByPerc ?? 100) / 100
@@ -50,4 +48,41 @@ export async function playDrums(track: DrumTrack) {
 		players.player(drum).start(currentTime)
 		currentTime += interval
 	}
+}
+
+let metronomeTransport: Tone.Loop | null = null;
+
+export async function startMetronome(tempo: number, density: DNoteDur) {
+    const players = new Tone.Players({
+        hc: "/samples/hat-closed.wav",
+    }).toDestination()
+
+    await Tone.start()
+    
+    // Stop any existing metronome
+    if (metronomeTransport) {
+        metronomeTransport.dispose()
+    }
+    
+    const transport = Tone.getTransport()  // Use getTransport() instead of Transport
+    transport.bpm.value = tempo
+    
+    // Calculate when to trigger based on density
+    const subdivision = `${4/density}n` // converts density to Tone.js notation
+    
+    metronomeTransport = new Tone.Loop((time) => {
+        players.player("hc").start(time)
+    }, subdivision)
+    
+    metronomeTransport.start()
+    transport.start()
+}
+
+export function stopMetronome() {
+    if (metronomeTransport) {
+        metronomeTransport.dispose()
+        metronomeTransport = null
+    }
+    const transport = Tone.getTransport()
+    transport.stop()
 }

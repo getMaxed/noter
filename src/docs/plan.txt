@@ -1,5 +1,11 @@
+- int: make sure sounds are good
+
+
+
+
 - "scale": rename to root
 - cancel when pressing PLAY again
+
 
 
 
@@ -10,6 +16,8 @@
 - add undo functionality (show undo/redo index, limit only to 5)
 - add redo functionality (show undo/redo index, limit only to 5)
 // !!! i need to make sure that EVERYTHING IS WORKING WELL !!! ALL OF THE FUNCTIONALITY !!! DOCUMENT EVERYTHING !!!
+
+- tempo: configure -> play -> stop
 
 PHASE 1: FINAL
 - full cleanup -> refactor -> reorganize
