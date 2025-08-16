@@ -469,8 +469,19 @@ export function NotePlayer() {
             }}>
                 <div>
                     <p style={{ textDecoration: "underline", marginBottom: 8 }}>Some Text</p>
-                    <div style={{ display: "flex", marginTop: 8, height: 20, border: "1px dotted red" }}>
-                        {notes.map((n, idx) => <Note isActive={isNoteActive(idx)} key={idx} s={n} />)}
+                    <div style={{ display: "flex", flexDirection: "column", marginTop: 8, border: "1px dotted red" }}>
+                        {noteRows.map((row, rowIdx) => (
+                            <div key={rowIdx} style={{ display: "flex", height: 20 }}>
+                                {row.map(([noteIdx, dur], cellIdx) => (
+                                    <Note 
+                                        key={`${rowIdx}-${cellIdx}`}
+                                        isActive={isNoteActive(noteIdx)} 
+                                        s={notes[noteIdx]} 
+                                        // displayDur={dur} // Optional: if you want to show the split duration
+                                    />
+                                ))}
+                            </div>
+                        ))}
                     </div>
                 </div>
                 <div>
@@ -574,8 +585,8 @@ function Note({ s, isActive }: NoteProps) {
             alignItems: "center",
             justifyContent: "center"
         }}>
-            <span style={{ fontWeight: "bold" }}>d{renderShift(shift)}{deg}</span>
-            <span style={{}}>i{int}</span>
+            <span style={{ fontWeight: "bold" }}>d{renderShift(shift)}{deg}</span>-
+            <span style={{ textDecoration: "underline" }}>i{int}</span>-
             <span style={{}}>x{dur}</span>
         </div>
     )
