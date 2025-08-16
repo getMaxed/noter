@@ -3,8 +3,48 @@ import { playMelody, startMetronome, stopMetronome } from '../audio-player';
 import { NOTES, NOTES_IN_ORDER } from '../constants/notes';
 import { KEY_PLAY, KEY_TEMPO_INPUT_FOCUS_TOGGLE, KEY_SCALE_DOWN, KEY_SCALE_UP, KEY_METRNOME_TOGGLE, KEY_METRNOME_FREQ_DOWN, KEY_METRNOME_FREQ_UP, KEY_DEG_1, KEY_DEG_F2, KEY_DEG_2, KEY_DEG_3, KEY_DEG_S3, KEY_DEG_4, KEY_DEG_S4, KEY_DEG_5, KEY_DEG_6, KEY_DEG_S6, KEY_DEG_7, KEY_DEG_S7, KEY_SHIFT_DOWN, KEY_SHIFT_UP, KEY_DURATION_DOWN, KEY_DURATION_UP, KEY_SELECT_INT_FOCUS_TOGGLE, KEY_SELECT_DURMOD_FOCUS_TOGGLE } from './constants/shortcuts.player';
 import { DEFAULT_TEMPO, DEFAULT_SCALE, DEFAULT_METRONOME_FREQ, DEFAULT_NOTE } from './constants/defaults.player';
-import { DNOTE_DURS, SHIFT_VALS, DNOTE_INTS } from '../constants/dnote';
+import { DNOTE_DURS, SHIFT_VALS, DNOTE_INTS, MAP_NOTE_DUR_TO_FRACTION } from '../constants/dnote';
 
+function layoutNotesIntoRows(notes: DNote[]) {
+    const result: [number, number | null][][] = [[]];
+    let currRowIdx = 0;
+
+    for (const [currNoteIdx, n] of notes.entries()) {
+        const rowFractions = result[currRowIdx].map(([_, dur]) => 
+            dur === null ? 0 : MAP_NOTE_DUR_TO_FRACTION[dur as DNoteDur]
+        );
+        const usedRowSpace = rowFractions.reduce((sum, frac) => sum + frac, 0);
+        const remainingRowSpace = 1 - usedRowSpace;
+
+        const currNoteFraction = MAP_NOTE_DUR_TO_FRACTION[n.dur];
+
+        if (currNoteFraction <= remainingRowSpace) {
+            // The note fits entirely in the current row
+            result[currRowIdx].push([currNoteIdx, n.dur]);
+        } else {
+            // The note must be split across rows
+            
+            // Fill the rest of the current row (if there's space)
+            if (remainingRowSpace > 0) {
+                // Find a duration that matches the remaining space
+                const remainingDur = Object.keys(MAP_NOTE_DUR_TO_FRACTION).find(
+                    dur => MAP_NOTE_DUR_TO_FRACTION[dur as DNoteDur] === remainingRowSpace
+                ) as DNoteDur | undefined;
+                
+                result[currRowIdx].push([currNoteIdx, remainingDur || null]);
+            }
+
+            // Start a new row
+            currRowIdx += 1;
+            result.push([]);
+
+            // Add the note to the new row (it should fit now)
+            result[currRowIdx].push([currNoteIdx, n.dur]);
+        }
+    }
+
+    return result;
+}
 
 export function NotePlayer() {
     const [notes, setNotes] = React.useState<DNote[]>([DEFAULT_NOTE])
@@ -12,6 +52,9 @@ export function NotePlayer() {
     const [selectionStartIdx, setSelectionStartIdx] = React.useState<null | number>(null)
 
     const currNote = React.useMemo(() => notes[activeNoteIdx], [notes, activeNoteIdx])
+
+    const noteRows = React.useMemo(() => layoutNotesIntoRows(notes), [notes])
+    console.log({ notes, noteRows })
 
     const activeNotesRange = React.useMemo(() => {
         if (selectionStartIdx === null) return []

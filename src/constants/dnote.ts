@@ -5,3 +5,12 @@ export const DNOTE_DURS: DNoteDur[] = [1, 2, 4, 8, 16, 32]
 export const DNOTE_INTS: DNoteInt[] = ["1", "2min", "2maj", "3", "3min", "3maj", "4", "5", "6", "6min", "6maj", "7", "7min", "7maj", "8"] 
 
 export const SHIFT_VALS: number[] = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
+
+export const MAP_NOTE_DUR_TO_FRACTION = {
+    1: 1,
+    2: 0.5,
+    4: 0.25,
+    8: 0.125,
+    16: 0.0625,
+    32: 0.03125
+}

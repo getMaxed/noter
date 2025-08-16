@@ -1,3 +1,8 @@
+- "NoteEditor"
+- add 0s
+
+- add ENTER -> record stuff
+
 - int: make sure sounds are good
 
 - cancel when pressing PLAY again
